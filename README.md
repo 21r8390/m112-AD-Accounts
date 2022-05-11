@@ -1,53 +1,49 @@
-<div id="top"></div>
+<div id="top" arial-hidden="true"></div>
 
-<br />
-<div align="center">
-    <img src="assets/psIcon.png" alt="Logo" width="80">
+<div align="center" style="margin: 50px 0px">
+  <img src="assets/psIcon.png" alt="Powershell Logo" title="PowerShell" width="120px">
 
-<h3 align="center"> AD-Accounts</h3>
+## AD-Accounts
 
-  <p align="center">
-    Project M122 
-    <br />
-    <br />
-    <br />
-  </p>
+_Projekt M122_
+
+> Joaquin Koller & Manuel Schumacher
+
+---
+
 </div>
 
-
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#auftrag">Auftrag</a></li>
-    <li><a href="#anforderungen">Anforderungen</a></li>
-    <li>
-      <a href="#use-cases">Use cases</a>
-      <ul>
-         <li><a href="#backend">Backend</a></li>
-         <li><a href="#frontend">Frontend</a></li>
-      </ul>
-    </li>
-    <li><a href="#built-with">Built with</a></li>
-  </ol>
+<details open>
+  <summary style="font-size:1.5rem">Table of Contents 📚</summary>
+  
+  - [Auftrag](#auftrag)
+  - [Anforderungen](#anforderungen)
+  - [Use cases](#use-cases)
+    - [Backend](#backend)
+    - [Frontend](#frontend)
+  - [Built with](#built-with)
+
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## Auftrag
 
-Sie erstellen auf der Basis einer vorliegenden XML-Datei ein PowerShell-Skript mit folgender Funktionalität: <br>
+Sie erstellen auf der Basis einer vorliegenden XML-Datei ein PowerShell-Skript mit folgender Funktionalität:
 
-1. Erstellen/Deaktivieren der AD-Accounts für alle Lernenden des BZT Frauenfeld
-2. Erstellen/Löschen der AD-Gruppen pro Klasse
-3. Erstellen/Umbenennen der Verzeichnisse für die Klassenablagen
-4. Erstellen/Umbenennen der Home-Verzeichnisse der Lernenden
-
-<br>
+- [ ] Erstellen/Deaktivieren der AD-Accounts für alle Lernenden des BZT Frauenfeld
+- [ ] Erstellen/Löschen der AD-Gruppen pro Klasse
+- [ ] Erstellen/Umbenennen der Verzeichnisse für die Klassenablagen
+- [ ] Erstellen/Umbenennen der Home-Verzeichnisse der Lernenden
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Anforderungen
 
+Das Projekt hat klare Anforderungen, welche erfüllt werden müssen. Anhand von diesen wird dieses Projekt bewertet. Diese Anforderungen sind [hier](Anforderungen.md) zu finden.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- Maybe? -->
+<!-- https://dev.to/omiossec/unit-testing-in-powershell-introduction-to-pester-1de7 -->
