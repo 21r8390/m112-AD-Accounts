@@ -19,7 +19,7 @@ Function Write-Log {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $True)]
-        [string]
+        [String]
         $Meldung, # Meldung, welche geloggt werden sollte
 
         [Parameter(Mandatory = $False)]
@@ -30,23 +30,28 @@ Function Write-Log {
 
     process {
         # Aktueller Timestamp
-        $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
+        [String] $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
         
-        # Log Meldung mit allen Infos
-        $Line = "$Stamp $Level $Meldung"
+        
+        If ($Config.LOG_PFAD) {
+            # Log Meldung mit allen Infos
+            [String] $Line = "$Stamp [$Level] $Meldung"
 
-        If ($Config.LOG_PFAD -ne "") {
             # Logfile wurde angegeben => schreibe in die Datei
             Add-Content -Path $Config.LOG_PFAD -Value $Line
         }
         Else {
             # Kein Logfile angegeben => schreibe in die Konsole
-            Write-Output $Line
+
+            Write-Host "$Stamp" -NoNewline -ForegroundColor Green
+            Write-Host $(" [$Level]").PadRight(10, ' ') -NoNewline -ForegroundColor Blue
+            Write-Host "$Meldung"
         }
     }
 }
 
 # Nicht ASCII Werte ersetzen
+# Src: https://www.reddit.com/r/PowerShell/comments/a5hfcw/three_ways_in_powershell_to_replace_diacritics_%C3%AB/
 function Remove-Umlaute {
     [CmdletBinding()]
     Param(
@@ -57,9 +62,6 @@ function Remove-Umlaute {
 
     process {
         # Sonderzeichen mithilfe von Encoding übersetzen
-        $sb = [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($Value))
-     
-        # Alles was nicht übersetze wurde ersetzen mit ASCII validen Zeichen
-        return ($sb -replace '[^a-zA-Z0-9 ]', '')
+        return [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($Value))
     }
 }
