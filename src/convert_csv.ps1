@@ -10,17 +10,8 @@
 $AssetsPath = ".\src\assets"
 
 # CSV in XML Konvertieren, da XML anscheinend kaputt
-Import-CSV -Path "$($AssetsPath)\schueler.csv" | Export-CliXML -Path "$($AssetsPath)\schueler.xml" 
-
-# XML auslesen
-[xml] $SchuelerXML = Get-Content -Path "$($AssetsPath)\schueler.xml"
-
-# Liste erstellen und bereits CSV-Headers hinzufügen
-[System.Collections.ArrayList] $CSV_Data = @($SchuelerXML.Objs.Obj.MS.S.N.GetValue(0))
-
-# CSV der Liste hinzufügen
-# Hinweis: XML hat bereits ein CSV Format
-$CSV_Data.AddRange($SchuelerXML.Objs.Obj.MS.S.InnerXML)
+# Zu Testszwecken wird die CSV Datei in ein XML umgeschrieben
+# Import-CSV -Path "$($AssetsPath)\schueler.csv" | Export-CliXML -Path "$($AssetsPath)\schueler.xml" 
 
 # Testen ob CSV-Datei bereits existiert
 If (Test-Path "$($AssetsPath)\schueler.csv") {
@@ -28,8 +19,15 @@ If (Test-Path "$($AssetsPath)\schueler.csv") {
     Remove-Item -Path "$($AssetsPath)\schueler.csv" -Force 
 }
 
+# XML auslesen
+[xml] $SchuelerXML = Get-Content -Path "$($AssetsPath)\schueler.xml"
+
+# CSV-Headers hinzufügen
+$SchuelerXML.Objs.Obj.MS.S.N.GetValue(0) | Out-File -Encoding utf8 -FilePath "$($AssetsPath)\schueler.csv" -Append
+
 # Liste in die CSV-Datei schreiben
-foreach ($Linie in $CSV_Data) {
+# Hinweis: XML hat bereits ein CSV Format
+foreach ($Linie in $SchuelerXML.Objs.Obj.MS.S.InnerXML) {
     # Jede Linie der Datei hinzufügen
     $Linie | Out-File -Encoding utf8 -FilePath "$($AssetsPath)\schueler.csv" -Append
 }
