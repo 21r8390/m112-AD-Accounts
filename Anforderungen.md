@@ -19,6 +19,8 @@
 |  8  | Alle Aktivitäten werden in einer Logdatei protokolliert. Die Einträge weisen Datum, Uhrzeit und eine Beschreibung der Aktivität (z.B. "AD-Benutzer peter.muster erstellt…") auf. |   3    |
 |  9  | Strukturierter (mehrere Skripts, Funktionen), professioneller,gut lesbarer Code                                                                                                  |   6    |
 |  9  | Die Arbeitsschritte (z.B. AD-Benutzer deaktivieren) können einzeln oder alle zusammen ausgeführt werden                                                                          |   6    |
-| 10  | Präsentation des Projektes                                                                                                                                                       |   8    |
+| 10  | Strukturierter (mehrere Skripts, Funktionen, Menü), professioneller, gut lesbarer Code                                                                                           |   9    |
+| 10  | Die Arbeitsschritte (z.B. AD-Benutzer deaktivieren) können einzeln oder alle zusammen ausgeführt werden                                                                          |   9    |
+| 11  | Präsentation des Projektes                                                                                                                                                       |   8    |
 
 [Moodle](https://moodle.bztf.ch/mod/page/view.php?id=117963)
