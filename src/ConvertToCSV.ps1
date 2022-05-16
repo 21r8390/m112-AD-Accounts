@@ -7,7 +7,7 @@
 #-----
 
 # Konfigurationen und Methoden laden
-. $PSScriptRoot\config.ps1
+. $PSScriptRoot\Config.ps1
 
 # XML auslesen
 [xml] $SchuelerXML = Get-Content -Path $Config.XML_PFAD

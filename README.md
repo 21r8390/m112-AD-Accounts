@@ -28,7 +28,10 @@ _Projekt M122_
 
 <!-- ABOUT THE PROJECT -->
 
-## ❗ PowerShell Version 7 verwenden 
+## ❗ PowerShell Version 7 verwenden
+
+> Damit das Skript funktioniert wird das Active Directory Modul benötigt. <br>
+> Dies kann über `Import-Module ActiveDirectory` installiert werden.
 
 ## Auftrag
 
@@ -46,6 +49,3 @@ Sie erstellen auf der Basis einer vorliegenden XML-Datei ein PowerShell-Skript m
 Das Projekt hat klare Anforderungen, welche erfüllt werden müssen. Anhand von diesen wird dieses Projekt bewertet. Diese Anforderungen sind [hier](Anforderungen.md) zu finden.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- Maybe? -->
-<!-- https://dev.to/omiossec/unit-testing-in-powershell-introduction-to-pester-1de7 -->
