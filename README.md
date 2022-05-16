@@ -28,6 +28,8 @@ _Projekt M122_
 
 <!-- ABOUT THE PROJECT -->
 
+## ❗ PowerShell Version 7 verwenden 
+
 ## Auftrag
 
 Sie erstellen auf der Basis einer vorliegenden XML-Datei ein PowerShell-Skript mit folgender Funktionalität:
