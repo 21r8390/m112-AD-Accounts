@@ -1,6 +1,6 @@
-# Author: Joaquin koller & Manuel Schumacher
+# Author: Joaquin Koller & Manuel Schumacher
 # Datum: 16.05.2022
-# Version: 1.1
+# Version: 1.3
 # Funktionsbeschreibung: Konfigurationsdatei für statische Werte & Methoden
 # Parameter: keine
 # Bemerkungen: Relative Pfade werden in absoulte Pfade umgewandelt
@@ -67,5 +67,5 @@ function Remove-Umlaute {
     process {
         # Sonderzeichen mithilfe von Encoding übersetzen
         return [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($Value))
-    }
+    } 
 }

@@ -24,3 +24,7 @@
 | 11  | Präsentation des Projektes                                                                                                                                                       |   8    |    ❌    |
 
 [Moodle](https://moodle.bztf.ch/mod/page/view.php?id=117963)
+
+<!--
+Daten in PowerShell Dateien ändern, damit mit Zeitplan übereinstimmt
+-->
