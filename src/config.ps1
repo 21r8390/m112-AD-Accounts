@@ -8,8 +8,8 @@
 
 # Konfigurations Variablen
 $Config = @{
-    XML_PFAD  = ("src\assets\schueler.xml" |  Resolve-Path); # Pfad zur XML-Datei 
-    CSV_PFAD  = ("src\assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
+    XML_PFAD  = ("assets\schueler.xml" |  Resolve-Path); # Pfad zur XML-Datei 
+    CSV_PFAD  = ("assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
     LOG_PFAD  = ""; #("src\assets\logs.log" |  Resolve-Path); # Pfad in welcher die Logs gespeichert werden sollen
     DELIMITER = ";"
 }
