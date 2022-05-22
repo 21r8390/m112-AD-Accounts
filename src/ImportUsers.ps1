@@ -1,44 +1,43 @@
-# Author: Joaquin koller & Manuel Schumacher
-# Datum: 09.05.2022
-# Version: 1.5
-# Funktionsbeschreibung: Konvertiert CSV zu XML.
+# Author: Joaquin Koller & Manuel Schumacher
+# Datum: 22.05.2022
+# Version: 1.3
+# Funktionsbeschreibung: Importiert CSV Datei
 # Parameter: keine
-# Bemerkungen: XML hat bereits CSV Format
+# Bemerkungen:
 #-----
 
 # Konfigurationen und Methoden laden
 . $PSScriptRoot\Config.ps1
 
 function Get-SchulerFromCSV {
-    [CmdletBinding()]
-    param (
-    )
-    
-    process {
-        try {
-            $SyncFieldMap = @{
-                Name         = "LastName"
-                Vorname      = "FirstName"
-                Benutzername = "Username"
-                Klasse       = "Klasse"
-                Klasse2      = "Klasse2"
-            };
+    # Try-Catch falls es einen Fehler beim Konvertieren gibt
+    try {
+        # Felder des CSV definieren, damit Spalten immer gleich sind
+        $SyncFelder = @{
+            Name         = "LastName"
+            Vorname      = "FirstName"
+            Benutzername = "Username"
+            Klasse       = "Klasse"
+            Klasse2      = "Klasse2"
+        };
 
-            $SyncProperties = $SyncFieldMap.GetEnumerator()
-            $Properties = foreach ($Property in $SyncProperties) {
-                @{
-                    Name       = $Property.Value;
-                    Expression = [scriptblock]::Create("`$_.$($Property.Key)");
-                }
+        # Für jedes Feld ein Property erstellen
+        $Properties = foreach ($Property in $SyncFelder.GetEnumerator()) {
+            # Property erstellen
+            @{
+                Name       = $Property.Value; # Feld in CSV
+                Expression = [scriptblock]::Create("`$_.$($Property.Key)"); # Feld in Sync
             }
-            
-            Import-Csv -Path $Config.CSV_PFAD -Delimiter $Config.DELIMITER | Select-Object -Property $Properties
-
         }
-        catch {
-            Write-Log "Fehler beim Konvertieren: " + $_.Exception.Message 
-        }
+        
+        # CSV Importieren und Spalten umbenennen
+        return (Import-Csv -Path $Config.CSV_PFAD -Delimiter $Config.DELIMITER | Select-Object -Property $Properties)
+    }
+    catch {
+        # Fehler beim Konvertieren loggen
+        Write-Log -Meldung "Fehler beim Konvertieren: $($_.Exception.Message)"
+        
+        # Leere Liste zurück geben
+        return @()
     }
 }
-
-#  Get-SchulerFromCSV

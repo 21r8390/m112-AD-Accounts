@@ -1,6 +1,6 @@
-# Author: Joaquin koller & Manuel Schumacher
+# Author: Joaquin Koller & Manuel Schumacher
 # Datum: 16.05.2022
-# Version: 1.1
+# Version: 1.3
 # Funktionsbeschreibung: Konfigurationsdatei für statische Werte & Methoden
 # Parameter: keine
 # Bemerkungen: Relative Pfade werden in absoulte Pfade umgewandelt
@@ -11,9 +11,9 @@ $Config = @{
     XML_PFAD  = ("assets\schueler.xml" |  Resolve-Path); # Pfad zur XML-Datei 
     CSV_PFAD  = ("assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
     LOG_PFAD  = ""; #("src\assets\logs.log" |  Resolve-Path); # Pfad in welcher die Logs gespeichert werden sollen
-    DELIMITER = ";"
-    DOMAIN = "DC=bztf, DC=local"
-    USER_OU = "OU=lernende,OU=bztf"
+    DELIMITER = ";";
+    DOMAIN    = "DC=bztf, DC=local";
+    USER_OU   = "OU=lernende,OU=bztf";
 }
 
 # Log Methode 
@@ -66,5 +66,5 @@ function Remove-Umlaute {
     process {
         # Sonderzeichen mithilfe von Encoding übersetzen
         return [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($Value))
-    }
+    } 
 }
