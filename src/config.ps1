@@ -10,11 +10,11 @@
 $Config = @{
     XML_PFAD  = ("assets\schueler.xml" |  Resolve-Path); # Pfad zur XML-Datei 
     CSV_PFAD  = ("assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
-    LOG_PFAD  = ""; #("src\assets\logs.log" |  Resolve-Path); # Pfad in welcher die Logs gespeichert werden sollen
-    DELIMITER = ";"
-    DOMAIN = "DC=bztf, DC=local"
-    USER_OU = "OU=lernende,OU=bztf"
-    USER_PW = ConvertTo-SecureString "bztf.001" -AsPlainText -Force
+    LOG_PFAD  = ""; # Pfad in welcher die Logs gespeichert werden sollen
+    DELIMITER = ";"; # Trennzeichen für CSV-Datei
+    DOMAIN    = "DC=bztf, DC=local";
+    USER_OU   = "OU=lernende,OU=bzt"; # Standard Passwort
+    USER_PW   = ConvertTo-SecureString "bztf.001" -AsPlainText -Force;
 }
 
 # Log Methode 
@@ -36,7 +36,6 @@ Function Write-Log {
         # Aktueller Timestamp
         [String] $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
         
-        
         If ($Config.LOG_PFAD) {
             # Log Meldung mit allen Infos
             [String] $Line = "$Stamp [$Level] $Meldung"
@@ -46,7 +45,6 @@ Function Write-Log {
         }
         Else {
             # Kein Logfile angegeben => schreibe in die Konsole
-
             Write-Host "$Stamp" -NoNewline -ForegroundColor Green
             Write-Host $(" [$Level]").PadRight(10, ' ') -NoNewline -ForegroundColor Blue
             Write-Host "$Meldung"
@@ -61,11 +59,11 @@ function Remove-Umlaute {
     Param(
         [Parameter(Mandatory = $True)]
         [String]
-        $Value
+        $Value  # String der ersetzt werden soll
     )
 
     process {
         # Sonderzeichen mithilfe von Encoding übersetzen
         return [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($Value))
-    } 
+    }
 }

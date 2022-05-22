@@ -9,7 +9,7 @@
 # Konfigurationen und Methoden laden
 . $PSScriptRoot\Config.ps1
 
-function Get-SchulerFromCSV {
+function Get-Schueler {
     # Try-Catch falls es einen Fehler beim Konvertieren gibt
     try {
         # Felder des CSV definieren, damit Spalten immer gleich sind
@@ -30,8 +30,8 @@ function Get-SchulerFromCSV {
             }
         }
         
-        # CSV Importieren und Spalten umbenennen
-        return (Import-Csv -Path $Config.CSV_PFAD -Delimiter $Config.DELIMITER | Select-Object -Property $Properties)
+        # CSV Importieren und Spalten umbenennen (Ohne Dupplikate)
+        return (Import-Csv -Path $Config.CSV_PFAD -Delimiter $Config.DELIMITER | Select-Object -Property $Properties -Unique)
     }
     catch {
         # Fehler beim Konvertieren loggen
