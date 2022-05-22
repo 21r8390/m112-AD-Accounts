@@ -41,4 +41,4 @@ function Get-SchulerFromCSV {
     }
 }
 
-Get-SchulerFromCSV
+#  Get-SchulerFromCSV

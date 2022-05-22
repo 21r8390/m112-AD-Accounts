@@ -12,6 +12,8 @@ $Config = @{
     CSV_PFAD  = ("assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
     LOG_PFAD  = ""; #("src\assets\logs.log" |  Resolve-Path); # Pfad in welcher die Logs gespeichert werden sollen
     DELIMITER = ";"
+    DOMAIN = "DC=bztf, DC=local"
+    USER_OU = "OU=lernende,OU=bztf"
 }
 
 # Log Methode 
