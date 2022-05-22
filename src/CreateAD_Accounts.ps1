@@ -10,10 +10,14 @@
 . $PSScriptRoot\Config.ps1
 . $PSScriptRoot\ImportUsers.ps1
 
-# Methode aus "ImportUsers", Importiert alle Schüler als Hashtable
+# Methode aus "ImportUsers", Importiert alle Schüler als Liste
 $users = Get-SchulerFromCSV
 
-# Erstellt die AD-Accounts
+# Erstellt die AD-Accounts wenn User nicht existiert.
 $users | ForEach-Object{
-    New-ADUser -Name $_.Username -path "OU=lernende,OU=bztf, $($Config.DOMAIN)"
+    if ($null -eq ([ADSISearcher] "(sAMAccountName=$($_.Username))").FindOne()) {
+        New-ADUser -Name $_.Username -path "$($Config.USER_OU), $($Config.DOMAIN)" -AccountPassword ($Config.USER_PW) -Enabled $true
+    }else {
+        Write-Log "Der User: $($_.Username) existiert bereits." -Level "INFO"
+    }
 }

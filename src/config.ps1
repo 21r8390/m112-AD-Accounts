@@ -14,6 +14,7 @@ $Config = @{
     DELIMITER = ";"
     DOMAIN = "DC=bztf, DC=local"
     USER_OU = "OU=lernende,OU=bztf"
+    USER_PW = ConvertTo-SecureString "bztf.001" -AsPlainText -Force
 }
 
 # Log Methode 

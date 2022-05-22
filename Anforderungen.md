@@ -7,8 +7,8 @@
 |  1  | Detaillierte Struktogramme der einzelnen Funktionen und der gesamten Programmlogik                                                                                               |   6    |    ❌    |
 |  2  | XML-Datei in ein CSV konvertieren. Das CSV wird dann weiterverarbeitet                                                                                                           |   3    |    ✔     |
 |  3  | AD-Accounts pro Lernende/Lernender erstellen, OU **BZTF/Lernende**                                                                                                               |   6    |    ✔    |
-|  3  | Benutzername gemäss XML Account nur erstellen, falls nicht bereits vorhanden                                                                                                     |   6    |    ❌    |
-|  3  | Initialkennwort für alle: **bztf.001**                                                                                                                                           |   6    |    ❌    |
+|  3  | Benutzername gemäss XML Account nur erstellen, falls nicht bereits vorhanden                                                                                                     |   6    |    ✔    |
+|  3  | Initialkennwort für alle: **bztf.001**                                                                                                                                           |   6    |    ✔    |
 |  4  | AD-Gruppe pro Klasse erstellen, OU **BZTF/Klassengruppen**                                                                                                                       |   6    |    ❌    |
 |  4  | Bezeichnung der Gruppen: **BZTF_klasse**                                                                                                                                         |   6    |    ❌    |
 |  4  | Gruppe nur erstellen, falls nicht bereits vorhanden                                                                                                                              |   6    |    ❌    |
