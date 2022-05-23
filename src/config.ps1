@@ -13,8 +13,8 @@ $Config = @{
     LOG_PFAD  = ""; # Pfad in welcher die Logs gespeichert werden sollen
     DELIMITER = ";"; # Trennzeichen für CSV-Datei
     DOMAIN    = "DC=bztf, DC=local";
-    USER_OU   = "OU=lernende,OU=bzt"; # Standard Passwort
-    USER_PW   = ConvertTo-SecureString "bztf.001" -AsPlainText -Force;
+    USER_OU   = "OU=lernende,OU=bzt"; 
+    USER_PW   = ConvertTo-SecureString "bztf.001" -AsPlainText -Force; # Standard Passwort
 }
 
 # Log Methode 
@@ -49,21 +49,5 @@ Function Write-Log {
             Write-Host $(" [$Level]").PadRight(10, ' ') -NoNewline -ForegroundColor Blue
             Write-Host "$Meldung"
         }
-    }
-}
-
-# Nicht ASCII Werte ersetzen
-# Src: https://www.reddit.com/r/PowerShell/comments/a5hfcw/three_ways_in_powershell_to_replace_diacritics_%C3%AB/
-function Remove-Umlaute {
-    [CmdletBinding()]
-    Param(
-        [Parameter(Mandatory = $True)]
-        [String]
-        $Value  # String der ersetzt werden soll
-    )
-
-    process {
-        # Sonderzeichen mithilfe von Encoding übersetzen
-        return [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($Value))
     }
 }

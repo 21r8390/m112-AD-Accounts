@@ -23,7 +23,7 @@ function New-AdAccounts {
                 New-ADUser -Name $_.Username -path "$($Config.USER_OU), $($Config.DOMAIN)" -AccountPassword ($Config.USER_PW) -Enabled $true
             }
             else {
-                Write-Log "Der User: $($_.Username) existiert bereits." -Level "INFO"
+                Write-Log "Der User: $($_.Username) existiert bereits." -Level INFO
             }
         }     
     }
