@@ -8,7 +8,7 @@
 
 . $PSScriptRoot\Config.ps1
 
-function Add-OrganizationalUnits {
+Function Add-OrganizationalUnits {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $True)]

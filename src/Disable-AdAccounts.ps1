@@ -10,7 +10,7 @@
 . $PSScriptRoot\Config.ps1
 . $PSScriptRoot\Get-Schueler.ps1
 
-function Disable-AdAccounts() {
+Function Disable-AdAccounts() {
     # Methode aus "ImportUsers", Importiert alle Schüler als Liste aus dem CSV
     $User_CSV = Get-Schueler
 

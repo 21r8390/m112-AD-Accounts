@@ -11,3 +11,6 @@
 
 # AD Modul importieren
 Import-Module ActiveDirectory
+
+# OUs am Start erstellen
+Add-OrganizationalUnits

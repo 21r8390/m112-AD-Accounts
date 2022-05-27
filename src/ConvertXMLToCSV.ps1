@@ -11,7 +11,7 @@
 
 # Umlaute ersetzten
 # Src: https://www.reddit.com/r/PowerShell/comments/a5hfcw/three_ways_in_powershell_to_replace_diacritics_%C3%AB/
-function Remove-Umlaute {
+Function Remove-Umlaute {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $True)]
@@ -25,7 +25,7 @@ function Remove-Umlaute {
     }
 }
 
-function ConvertXMLToCSV() {
+Function ConvertXMLToCSV() {
     # Try-Catch um Fehler beim auslesen abzufangen
     try {
         # XML auslesen

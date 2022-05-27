@@ -10,7 +10,7 @@
 . $PSScriptRoot\Config.ps1
 . $PSScriptRoot\Get-Schueler.ps1
 
-function New-AdAccounts {
+Function New-AdAccounts {
     begin {
         # Importiert alle Schüler als Liste
         $users = Get-Schueler
