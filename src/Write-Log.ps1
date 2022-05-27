@@ -18,7 +18,7 @@ Function Write-Log {
         $Meldung, # Meldung, welche geloggt werden sollte
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet("INFO", "WARN", "ERROR", "FATAL", "DEBUG")] # Gültige Log-Levels
+        [ValidateSet("INFO", "WARN", "ERROR", "DEBUG")] # Gültige Log-Levels
         [String]
         $Level = "INFO" # Level der aktuellen Meldung, Standard ist INFO
     )
@@ -35,9 +35,17 @@ Function Write-Log {
             Add-Content -Path $Config.LOG_PFAD -Value $Line -Encoding UTF8
         }
         Else {
+            [ConsoleColor]$Color = switch ($Level) {
+                DEBUG { "Magenta" }
+                ERROR { "Red" }
+                WARN { "Yellow" }
+                INFO { "Blue" }
+                Default { "Blue" }
+            }
+
             # Kein Logfile angegeben => schreibe in die Konsole
             Write-Host "$Stamp" -NoNewline -ForegroundColor Green
-            Write-Host $(" [$Level]").PadRight(10, ' ') -NoNewline -ForegroundColor Blue
+            Write-Host $(" [$Level]").PadRight(10, ' ') -NoNewline -ForegroundColor $Color
             Write-Host "$Meldung"
         }
     }

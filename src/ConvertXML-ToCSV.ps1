@@ -26,7 +26,7 @@ Function Remove-Umlaute {
     }
 }
 
-Function ConvertXML-ToCSV() {
+Function Convert-XMLToCSV() {
     # Try-Catch um Fehler beim auslesen abzufangen
     try {
         # XML auslesen

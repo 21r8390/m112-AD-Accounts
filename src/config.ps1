@@ -8,6 +8,10 @@
 #-----
 
 # Konfigurations Variablen
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    <#Category#>'PSUseDeclaredVarsMoreThanAssignments', <#CheckId#>$null,
+    Justification = 'HashTable wird in in den anderen Dateien verwendet'
+)]
 $Config = @{
     XML_PFAD              = ("assets\schueler.xml" |  Resolve-Path); # Pfad zur XML-Datei 
     CSV_PFAD              = ("assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
