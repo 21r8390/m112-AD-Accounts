@@ -6,9 +6,10 @@
 # Bemerkungen:
 #-----
 
+# Konfigurationen und Methoden laden
 . $PSScriptRoot\Config.ps1
 
-Function Add-OrganizationalUnits {
+Function Add-OUs {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $True)]
@@ -37,13 +38,13 @@ Function Add-OrganizationalUnits {
             Write-Log "Die Organizational Unit $($Config.SCHULE_OU + "/" + $Config.KLASSE_OU) existiert bereits" -Level DEBUG
         }
 
-        if (!(Get-ADOrganizationalUnit -Filter "Name -like '$($Config.USER_OU)'" -SearchBase "OU=$($Config.SCHULE_OU),$($Config.DOMAIN)")) {
+        if (!(Get-ADOrganizationalUnit -Filter "Name -like '$($Config.LERNENDE_OU)'" -SearchBase "OU=$($Config.SCHULE_OU),$($Config.DOMAIN)")) {
             # Organizational Unit für Lernende erstellen
-            New-ADOrganizationalUnit -Name $Config.USER_OU -Path "OU=$($Config.SCHULE_OU),$($Config.DOMAIN)" -ProtectedFromAccidentalDeletion $Protected
-            Write-Log "Organizational Unit $($Config.USER_OU) erstellt" -Level INFO
+            New-ADOrganizationalUnit -Name $Config.LERNENDE_OU -Path "OU=$($Config.SCHULE_OU),$($Config.DOMAIN)" -ProtectedFromAccidentalDeletion $Protected
+            Write-Log "Organizational Unit $($Config.LERNENDE_OU) erstellt" -Level INFO
         }
         else {
-            Write-Log "Die Organizational Unit $($Config.SCHULE_OU + "/" + $Config.USER_OU) existiert bereits" -Level DEBUG
+            Write-Log "Die Organizational Unit $($Config.SCHULE_OU + "/" + $Config.LERNENDE_OU) existiert bereits" -Level DEBUG
         }
     }
 }

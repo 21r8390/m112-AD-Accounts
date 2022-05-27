@@ -10,6 +10,7 @@
 . $PSScriptRoot\Config.ps1
 
 # Umlaute ersetzten
+# Bemerkungen: Wird nur in dieser Methode verwendet, deswegen nicht in eigener Funktion
 # Src: https://www.reddit.com/r/PowerShell/comments/a5hfcw/three_ways_in_powershell_to_replace_diacritics_%C3%AB/
 Function Remove-Umlaute {
     [CmdletBinding()]
@@ -25,7 +26,7 @@ Function Remove-Umlaute {
     }
 }
 
-Function ConvertXMLToCSV() {
+Function ConvertXML-ToCSV() {
     # Try-Catch um Fehler beim auslesen abzufangen
     try {
         # XML auslesen

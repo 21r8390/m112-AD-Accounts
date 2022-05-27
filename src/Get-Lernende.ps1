@@ -9,7 +9,7 @@
 # Konfigurationen und Methoden laden
 . $PSScriptRoot\Config.ps1
 
-Function Get-Schueler {
+Function Get-Lernende {
     # Try-Catch falls es einen Fehler beim Konvertieren gibt
     try {
         # Felder des CSV definieren, damit Spalten immer gleich sind
