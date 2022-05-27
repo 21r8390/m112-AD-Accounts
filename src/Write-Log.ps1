@@ -32,7 +32,7 @@ Function Write-Log {
             [String] $Line = "$Stamp $("[$Level]".PadRight(10, ' ')) $Meldung"
 
             # Logfile wurde angegeben => schreibe in die Datei
-            Add-Content -Path $Config.LOG_PFAD -Value $Line
+            Add-Content -Path $Config.LOG_PFAD -Value $Line -Encoding UTF8
         }
         Else {
             # Kein Logfile angegeben => schreibe in die Konsole
