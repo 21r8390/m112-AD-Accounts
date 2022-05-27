@@ -36,7 +36,7 @@ Function Write-Log {
 
     process {
         # Aktueller Timestamp
-        [String] $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
+        [String] $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss.fff")
         
         If ($Config.LOG_PFAD) {
             # Log Meldung mit allen Infos
