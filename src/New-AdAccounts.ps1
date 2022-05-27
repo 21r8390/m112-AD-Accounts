@@ -20,7 +20,7 @@ function New-AdAccounts {
         # Erstellt die AD-Accounts wenn User nicht existiert
         $users | ForEach-Object {
             if ($null -eq ([ADSISearcher] "(sAMAccountName=$($_.Username))").FindOne()) {
-                New-ADUser -Name $_.Username -path "$($Config.USER_OU), $($Config.DOMAIN)" -AccountPassword ($Config.USER_PW) -Enabled $true
+                New-ADUser -Name $_.Username -path "OU=$($Config.USER_OU), $($Config.DOMAIN)" -AccountPassword ($Config.USER_PW) -Enabled $true
             }
             else {
                 Write-Log "Der User: $($_.Username) existiert bereits." -Level INFO

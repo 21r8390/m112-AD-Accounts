@@ -1,4 +1,4 @@
-# Author: Joaquin koller & Manuel Schumacher
+# Author: Joaquin Koller & Manuel Schumacher
 # Datum: 22.05.2022
 # Version: 1.1
 # Funktionsbeschreibung: AD-Benutzer, welche nicht im XML vorhanden sind, deaktivieren

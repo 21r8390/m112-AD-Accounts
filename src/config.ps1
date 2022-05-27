@@ -12,8 +12,10 @@ $Config = @{
     CSV_PFAD  = ("assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
     LOG_PFAD  = ""; # Pfad in welcher die Logs gespeichert werden sollen
     DELIMITER = ";"; # Trennzeichen für CSV-Datei
-    DOMAIN    = "DC=bztf, DC=local";
-    USER_OU   = "OU=lernende,OU=bzt"; 
+    DOMAIN    = "DC=bztf,DC=local";
+    SCHULE_OU = "BZTF";
+    KLASSE_OU = "Klassengruppen";
+    USER_OU   = "Lernende"; 
     USER_PW   = ConvertTo-SecureString "bztf.001" -AsPlainText -Force; # Standard Passwort
 }
 
