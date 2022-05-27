@@ -14,8 +14,8 @@
 |  4  | Gruppe nur erstellen, falls nicht bereits vorhanden                                                                                                                              |   6    |    ✔     |
 |  5  | AD-Benutzer, welche nicht im XML vorhanden sind, deaktivieren                                                                                                                    |   3    |    ✔     |
 |  6  | AD-Gruppen, welche nicht im XML vorhanden sind, löschen                                                                                                                          |   3    |    ✔     |
-|  7  | AD-Benutzer den entsprechenden Klassengruppen zuweisen                                                                                                                           |   3    |    ❌    |
-|  7  | Nicht mehr zugewiesene Benutzer aus den Gruppen entfernen                                                                                                                        |   3    |    ❌    |
+|  7  | AD-Benutzer den entsprechenden Klassengruppen zuweisen                                                                                                                           |   3    |    ✔     |
+|  7  | Nicht mehr zugewiesene Benutzer aus den Gruppen entfernen                                                                                                                        |   3    |    ✔     |
 |  8  | Alle Aktivitäten werden in einer Logdatei protokolliert. Die Einträge weisen Datum, Uhrzeit und eine Beschreibung der Aktivität (z.B. "AD-Benutzer peter.muster erstellt…") auf. |   3    |    ❌    |
 |  9  | Strukturierter (mehrere Skripts, Funktionen, Menü), professioneller, gut lesbarer Code                                                                                           |   9    |    ❌    |
 |  9  | Die Arbeitsschritte (z.B. AD-Benutzer deaktivieren) können einzeln oder alle zusammen ausgeführt werden                                                                          |   9    |    ❌    |
