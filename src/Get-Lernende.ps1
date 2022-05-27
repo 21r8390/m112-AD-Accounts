@@ -14,9 +14,10 @@ Function Get-Lernende {
     try {
         # Felder des CSV definieren, damit Spalten immer gleich sind
         $SyncFelder = @{
-            Name         = "LastName"
-            Vorname      = "FirstName"
-            Benutzername = "Username"
+            # CSV Feld  |  AD Feld
+            Name         = "Surname"
+            Vorname      = "GivenName"
+            Benutzername = "SamAccountName"
             Klasse       = "Klasse"
             Klasse2      = "Klasse2"
         };

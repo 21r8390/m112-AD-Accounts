@@ -15,7 +15,7 @@ Function Add-Klassen {
         # HashSet erstellen, damit keine Dupplikate
         $Klassen = New-Object System.Collections.Generic.HashSet[String]
 
-        # Alle Schüler und Klassen aus CSV
+        # Alle Klassen aus CSV
         Get-Lernende | ForEach-Object {
             # Zur HashSet hinzugügen, wenn nicht leer
             if (! [string]::IsNullOrEmpty($_.Klasse)) {
@@ -26,25 +26,25 @@ Function Add-Klassen {
             }
         }
         Write-Log "Es wurden $($Klassen.Count) Klassen im CSV gefunden" -Level DEBUG
+
+        # Klassen aus AD auslesen
+        $AdKlassen = Get-AdGroup -Filter '*'  -SearchBase "OU=$($Config.KLASSE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)"
+        Write-Log "Es wurden $($AdKlassen.Count) Klassen im AD gefunden" -Level DEBUG
     }
     
     process {
-        # Klassen auslesen
-        $AdKlassen = Get-AdGroup -Filter '*'  -SearchBase "OU=$($Config.KLASSE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)"
-        Write-Log "Es wurden $($AdKlassen.Count) Klassen im AD gefunden" -Level DEBUG
-
-        # Wenn Gruppe nicht in AD vorhanden, erstellen
-        $Klassen | Where-Object { ! ($AdKlassen.Name -contains $_) } | ForEach-Object {
+        # Wenn Klasse nicht in AD vorhanden, dann erstellen
+        $Klassen | Where-Object { ! ($AdKlassen.Name -Contains $_) } | ForEach-Object {
             New-AdGroup -Name $_ -GroupCategory Security  -GroupScope Global -Path "OU=$($Config.KLASSE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)" -Description "Klassengruppe für $_"
-            Write-Log "Gruppe $_ wird zum AD hinzugefügt" -Level DEBUG
+            Write-Log "Klasse $_ wurde zum AD hinzugefügt" -Level DEBUG
         }
-        Write-Log "Klassen mit dem AD synchronisiert" -Level INFO
+        Write-Log "Klassen wurden mit dem AD synchronisiert" -Level INFO
 
-        # Wenn Gruppe nicht in CSV vorhanden, aus AD löschen
-        $AdKlassen | Where-Object { ! ($Klassen -contains $_.Name) } | ForEach-Object {
-            # Gruppe ohne Bestätigung löschen
+        # Wenn Klasse nicht in CSV vorhanden, aus AD löschen
+        $AdKlassen | Where-Object { ! ($Klassen -Contains $_.Name) } | ForEach-Object {
+            # Klasse ohne Bestätigung löschen
             $_ | Remove-ADGroup -Confirm:$false
-            Write-Log "Gruppe $($_.Name) wird aus AD gelöscht" -Level WARN
+            Write-Log "Klasse $_ wurde aus AD gelöscht" -Level WARN
         }
     }
 }
