@@ -12,8 +12,8 @@
 |  4  | AD-Gruppe pro Klasse erstellen, OU **BZTF/Klassengruppen**                                                                                                                       |   6    |    ✔️    |
 |  4  | Bezeichnung der Gruppen: **BZTF_klasse**                                                                                                                                         |   6    |    ✔️    |
 |  4  | Gruppe nur erstellen, falls nicht bereits vorhanden                                                                                                                              |   6    |    ✔️    |
-|  5  | AD-Benutzer, welche nicht im XML vorhanden sind, deaktivieren                                                                                                                    |   3    |    ✔️    |
-|  6  | AD-Gruppen, welche nicht im XML vorhanden sind, löschen                                                                                                                          |   3    |    ✔️    |
+|  5  | AD-Benutzer, welche nicht im XML vorhanden sind, deaktivieren                                                                                                                    |   3    |    ❌    |
+|  6  | AD-Gruppen, welche nicht im XML vorhanden sind, löschen                                                                                                                          |   3    |    ❌    |
 |  7  | AD-Benutzer den entsprechenden Klassengruppen zuweisen                                                                                                                           |   3    |    ✔️    |
 |  7  | Nicht mehr zugewiesene Benutzer aus den Gruppen entfernen                                                                                                                        |   3    |    ✔️    |
 |  8  | Alle Aktivitäten werden in einer Logdatei protokolliert. Die Einträge weisen Datum, Uhrzeit und eine Beschreibung der Aktivität (z.B. "AD-Benutzer peter.muster erstellt…") auf. |   3    |    ❌    |
