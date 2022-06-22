@@ -10,7 +10,7 @@
 . $PSScriptRoot\Config.ps1
 
 # Normalisiert den SamAccountName
-# Namensschema: Vorname{0-3}.Nachname{0-13}-Nummer
+# Namensschema: Vorname{0-3}.Nachname{0-13}-Nummer{0-99}
 Function Get-NormalizedSamAccountName {
     [CmdletBinding()]
     param (
