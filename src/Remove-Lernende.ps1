@@ -29,8 +29,8 @@ Function Remove-Lernende {
 
         # Entfernte Lernende deaktivieren
         foreach ($Lernender in $AdLernende | Where-Object { $_.SamAccountName -in $EntfernteLernende.SamAccountName } ) {
-            Set-ADUser $Lernender -Enabled $Aktivieren
-            Write-Log "Lernender $($Lernende.SamAccountName) wurde aktiviert" -Level DEBUG
+            Set-ADUser $Lernender -Enabled $false
+            Write-Log "Lernender $($Lernender.SamAccountName) wurde deaktiviert" -Level DEBUG
         }
         Write-Log "$($EntfernteLernende.Count) Lernende wurden deaktiviert" -Level INFO
     }

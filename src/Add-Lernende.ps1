@@ -79,8 +79,8 @@ Function Add-Lernende {
 
         # Aktive Benutzer aktivieren
         foreach ($Lernender in $AdLernende | Where-Object { $_.SamAccountName -in $Synchronisierte.SamAccountName } ) {
-            Set-ADUser $Lernender -Enabled $Aktivieren
-            Write-Log "Lernender $($Lernende.SamAccountName) wurde aktiviert" -Level DEBUG
+            Set-ADUser $Lernender -Enabled $true
+            Write-Log "Lernender $($Lernender.SamAccountName) wurde aktiviert" -Level DEBUG
         }
         Write-Log "$($Synchronisierte.Count) Lernende wurden aktiviert" -Level INFO
     }
