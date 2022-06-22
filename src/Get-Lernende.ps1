@@ -10,7 +10,7 @@
 . $PSScriptRoot\Config.ps1
 
 # Normalisiert den SamAccountName
-# Namensschema: Vorname{0-3}.Nachname{0-14}-Nummer
+# Namensschema: Vorname{0-3}.Nachname{0-13}-Nummer
 Function Get-NormalizedSamAccountName {
     [CmdletBinding()]
     param (
@@ -54,7 +54,7 @@ Function Get-NormalizedSamAccountName {
         }
         [string]$End = $Lernender.Surname -replace $ReplaceRegex
         if ($End.Length -gt 13) {
-            $End = $End.Substring(0, 14)
+            $End = $End.Substring(0, 13)
         }
 
         for ([int]$index = 1; ; $index++) {

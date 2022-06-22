@@ -14,7 +14,7 @@
 )]
 $Config = @{
     # Files
-    BASE_HOME_PFAD           = "C:\Freigaben\";
+    BASE_HOME_PFAD           = "C:\Freigaben\"; # Pfad wo die Verzeichnisse erstellt werden
     XML_PFAD                 = ("assets\schueler.xml" |  Resolve-Path); # Pfad zur XML-Datei 
     CSV_PFAD                 = ("assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
     DELIMITER                = ";"; # Trennzeichen für CSV-Datei
