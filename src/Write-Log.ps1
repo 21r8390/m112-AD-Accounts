@@ -8,6 +8,13 @@
 # Bemerkungen: Log-Datei muss angegeben werden um in Datei zu speichern
 #-----
 
+Enum LogLevel {
+    DEBUG
+    INFO
+    WARN
+    ERROR
+}
+
 # Log Methode
 # Stackoverflow: https://stackoverflow.com/a/38738942/16632604
 Function Write-Log {
@@ -16,14 +23,21 @@ Function Write-Log {
         [Parameter(Mandatory = $True)]
         [String]
         $Meldung, # Meldung, welche geloggt werden sollte
-
         [Parameter(Mandatory = $False)]
-        [ValidateSet("INFO", "WARN", "ERROR", "DEBUG")] # Gültige Log-Levels
-        [String]
-        $Level = "INFO" # Level der aktuellen Meldung, Standard ist INFO
+        [ValidateSet(
+            "DEBUG", "INFO", "WARN", "ERROR",
+            ErrorMessage = "Wert '{0}' is ein ungültiger LogLevel. Versuchs meit einem von diesen: {1}"
+        )] # Gültige Log-Levels
+        [LogLevel]
+        $Level = [LogLevel]::INFO # Level der aktuellen Meldung, Standard ist INFO
     )
-
     process {
+        # Prüfen ob Level relevant ist (Wenn keines gesetzt, dann immer ausgeben)
+        if ($Config.LOG_LEVEL -and $Level -lt $Config.LOG_LEVEL) {
+            # Log-Level ist kleiner als der in der Config-Datei angegebene Log-Level
+            return;
+        }
+
         # Aktueller Timestamp
         [String] $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss.fff")
         
