@@ -25,8 +25,7 @@ Function Write-Log {
         $Meldung, # Meldung, welche geloggt werden sollte
         [Parameter(Mandatory = $False)]
         [ValidateSet(
-            "DEBUG", "INFO", "WARN", "ERROR",
-            ErrorMessage = "Wert '{0}' is ein ungültiger LogLevel. Versuchs meit einem von diesen: {1}"
+            "DEBUG", "INFO", "WARN", "ERROR"
         )] # Gültige Log-Levels
         [LogLevel]
         $Level = [LogLevel]::INFO # Level der aktuellen Meldung, Standard ist INFO
