@@ -3,7 +3,9 @@
 # Version: 1.0
 # Funktionsbeschreibung: Menü zum Ausführen von Funktionen
 # Parameter: keine
-# Bemerkungen: Noch nicht fertig
+# Bemerkungen: Noch nicht fertig 
+#               Default bei Switch
+#              Auswahlmöglichkeiten in Bemerkung
 #-----
 
 # Konfigurationen und Methoden laden
@@ -22,19 +24,19 @@ try {
 }
 catch {
     # Fehlermeldung anzeigen
-    Write-Log "Das Modul ActiveDirectory konnte nicht installiert werden! Es ist nur unter Windows Server verfuegbar..." -Level ERROR
+    Write-Log "Das Modul ActiveDirectory konnte nicht installiert werden! Es ist nur unter Windows Server verfuer..." -Level ERROR
 }
 
 # Zeigt das Menu in der Konsole an
 function Show-Menu {
-    
+  
     Write-Host "================ Projekt M122 AD-Accounts ================`n"
     
     Write-Host "1: XML zu CSV konvertieren"
     Write-Host "2: AD-Accounts für die Lernenden erstellen"
     Write-Host "3: AD-Gruppen für die Klassen erstellen"
     Write-Host "4: AD-Benutzer, welche nicht im CSV vorhanden sind, deaktivieren"
-    Write-Host "5: AD-Gruppen welche nicht im CSV vorhanden sind, loeschen"
+    Write-Host "5: AD-Gruppen welche nicht im CSV vorhanden sind, loeen"
     Write-Host "6: AD-Benutzer den Gruppen zuweisen"
     # Write-Host "`n"
     Write-Host "Exit: Geben Sie 'Exit' ein um das Programm zu verlasen`n"
@@ -45,7 +47,7 @@ function Show-Menu {
 do {
     Clear-Host
     Show-Menu
-    $selection = Read-Host "Waehlen sie eine Option aus"
+    $selection = Read-Host "Waen sie eine Option aus"
     switch ($selection) {
         '1' {
             # ConvertXML-ToCSV.ps1: XML zu CSV konvertieren
@@ -66,14 +68,14 @@ do {
             # AD-Benutzer, welche nicht im CSV vorhanden sind, deaktivieren
             # TODO: Methode separieren aus Add-Lernende.ps1 ❗
             Clear-Host
-            Write-Host "Noch nicht Verfuegbar"
+            Write-Host "Noch nicht Verfuer"
             pause
         }
         '5' {
             # AD-Benutzer, welche nicht im CSV vorhanden sind, deaktivieren
             # TODO: Methode separieren aus Add-Lernende.ps1 ❗
             Clear-Host
-            Write-Host "Noch nicht Verfuegbar"
+            Write-Host "Noch nicht Verfuer"
             pause
         } 
         '6' {
