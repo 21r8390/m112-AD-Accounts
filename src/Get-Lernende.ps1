@@ -3,7 +3,7 @@
 # Version: 1.3
 # Funktionsbeschreibung: Importiert CSV Datei
 # Parameter: keine
-# Bemerkungen: Inspieriert von https://github.com/JackedProgrammer/AutomatingAD
+# Bemerkungen: Inspiriert von https://github.com/JackedProgrammer/AutomatingAD
 #-----
 
 # Konfigurationen und Methoden laden
@@ -48,11 +48,11 @@ Function Get-NormalizedSamAccountName {
         [regex]$ReplaceRegex = "[^a-zA-Z]"
 
         # Teile des Namensschema auslesen
-        [string]$Start = $Lernender.Surname -replace $ReplaceRegex
+        [string]$Start = $Lernender.GivenName -replace $ReplaceRegex
         if ($Start.Length -gt 3) {
             $Start = $Start.Substring(0, 3)
         }
-        [string]$End = $Lernender.GivenName -replace $ReplaceRegex
+        [string]$End = $Lernender.Surname -replace $ReplaceRegex
         if ($End.Length -gt 14) {
             $End = $End.Substring(0, 14)
         }
