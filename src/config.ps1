@@ -1,6 +1,6 @@
 # Author: Joaquin Koller & Manuel Schumacher
 # Datum: 16.05.2022
-# Version: 1.4
+# Version: 1.6
 # Funktionsbeschreibung: Konfigurationsdatei für statische Werte
 # Parameter: keine
 # Bemerkungen: Relative Pfade werden in absoulte Pfade umgewandelt
@@ -14,6 +14,7 @@
 )]
 $Config = @{
     # Files
+    BASE_HOME_PFAD           = "C:\Freigaben\";
     XML_PFAD                 = ("assets\schueler.xml" |  Resolve-Path); # Pfad zur XML-Datei 
     CSV_PFAD                 = ("assets\schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
     DELIMITER                = ";"; # Trennzeichen für CSV-Datei

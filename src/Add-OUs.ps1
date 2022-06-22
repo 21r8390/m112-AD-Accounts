@@ -12,11 +12,10 @@
 Function Add-OUs {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $false)]
         [bool]
-        $Protected  # Wenn true, dann wird die OU geschützt
+        $Protected = $false # Wenn true, dann wird die OU geschützt
     )
-
 
     process {
         # OUs erstellen, falls noch nicht vorhanden
@@ -28,6 +27,8 @@ Function Add-OUs {
         else {
             Write-Log "Die Organizational Unit $($Config.SCHULE_OU) existiert bereits" -Level DEBUG
         }
+        # Verzeichnis für Schule erstellen
+        New-BasisVerzeichnis $Config.BASE_HOME_PFAD
 
         if (!(Get-ADOrganizationalUnit -Filter "Name -like '$($Config.KLASSE_OU)'" -SearchBase "OU=$($Config.SCHULE_OU),$($Config.DOMAIN)")) {
             # Organizational Unit für Klasse erstellen
@@ -37,6 +38,8 @@ Function Add-OUs {
         else {
             Write-Log "Die Organizational Unit $($Config.SCHULE_OU + "/" + $Config.KLASSE_OU) existiert bereits" -Level DEBUG
         }
+        # Verzeichnis für Klassen erstellen
+        New-BasisVerzeichnis ($Config.BASE_HOME_PFAD + "/" + $Config.KLASSE_OU)
 
         if (!(Get-ADOrganizationalUnit -Filter "Name -like '$($Config.LERNENDE_OU)'" -SearchBase "OU=$($Config.SCHULE_OU),$($Config.DOMAIN)")) {
             # Organizational Unit für Lernende erstellen
@@ -45,6 +48,26 @@ Function Add-OUs {
         }
         else {
             Write-Log "Die Organizational Unit $($Config.SCHULE_OU + "/" + $Config.LERNENDE_OU) existiert bereits" -Level DEBUG
+        }
+        # Verzeichnis für Lernende erstellen
+        New-BasisVerzeichnis ($Config.BASE_HOME_PFAD + "/" + $Config.LERNENDE_OU)
+    }
+}
+
+# Erstellt die Basisverzeichnisse für die Freigaben
+Function New-BasisVerzeichnis {
+    [CmdletBinding()]
+    Param(
+        [Parameter(Mandatory = $true)]
+        [string]$Pfad # Der Pfad, welcher erstellt werden sollte
+    )
+    process {
+        if (Test-Path -Path $Pfad) {
+            Write-Log "Basis Verzeichnis existiert bereits" -Level DEBUG
+        }
+        else {
+            New-Item -Path $Pfad -ItemType Directory -Force
+            Write-Log "Verzeichnis $Pfad erstellt" -Level INFO
         }
     }
 }

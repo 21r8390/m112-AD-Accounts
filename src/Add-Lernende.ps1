@@ -1,6 +1,6 @@
 # Author: Joaquin Koller & Manuel Schumacher
 # Datum: 22.05.2022
-# Version: 1.4
+# Version: 1.6
 # Funktionsbeschreibung: Erstellt pro Lernende/Lernender einen AD-Account in die OU **BZTF/Lernende** 
 # Parameter: keine
 # Bemerkungen: OUs müssen zuerst erstellt werden
@@ -9,6 +9,84 @@
 # Konfigurationen und Methoden laden
 . $PSScriptRoot\Config.ps1
 . $PSScriptRoot\Get-Lernende.ps1
+
+# Home Verzeichnis erstellen
+# StackOverflow: https://stackoverflow.com/questions/39384502/create-and-map-home-directory-for-ad-users-using-powershell
+Function New-HomeVerzeichnis {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$SamAccountName # Accountname des Lernenden
+    )
+    process {
+        # Home Verzeichnis erstellen
+        [string]$HomeDir = "$($Config.BASE_HOME_PFAD)/$($Config.LERNENDE_OU)/$($Lernender.SamAccountName)"
+        New-Item -Path $HomeDir -ItemType Directory -Force
+
+        # Berechtigungen setzen
+        $AclOb = New-Object System.Security.AccessControl.FileSystemAccessRule("$($Config.SCHULE_OU)\$($Lernender.SamAccountName)", 'FullAccess', 'ContainerInherit,ObjectInherit', 'None', 'Allow')   
+        Set-Acl $HomeDir $AclOb
+
+        # Home Verzeichnis zurückgeben
+        return $HomeDir
+    }
+}
+
+# Fügt einen AD-Account hinzu
+Function Add-NewAdLernender {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        $Lernender # Die Lernenden, welche noch nicht im AD vorhanden sind
+    )    
+    process {
+        # Properties erstellen
+        $AdUserProps = @{
+            GivenName             = $Lernender.GivenName
+            Surname               = $Lernender.Surname
+            DisplayName           = ($Lernender.GivenName + " " + $Lernender.Surname)
+            Name                  = $Lernender.SamAccountName
+            SamAccountName        = $Lernender.SamAccountName
+            UserPrincipalName     = "$($Lernender.GivenName + "." + $Lernender.Surname)@$($Config.SCHULE_OU)"
+            Departement           = $Config.SCHULE_OU
+            Office                = $Config.SCHULE_OU
+            AccountPassword       = $Config.STANDARD_PW
+            ChangePasswordAtLogon = $Config.CHANGE_PASSWORD_AT_LOGON
+            HomeDrive             = "H:"
+            HomeDirectory         = (New-HomeVerzeichnis $Lernender.SamAccountName)
+            Path                  = "OU=$($Config.LERNENDE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)"
+            Enabled               = $Config.USER_ENABLED
+            Confirm               = $false
+        }
+
+        # Lernender hinzufügen
+        New-AdUser $AdUserProps
+        Write-Log "Lernender $_ wurde zum AD hinzugefügt" -Level DEBUG
+    }
+}
+
+# Aktiviert einen lernenden
+Function Set-Lernender {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        $Lernender, # Der Lernender, welcher aktiviert werden soll
+        [Parameter(Mandatory = $true)]
+        [boolean]$Aktivieren # Ob der Lernender aktiviert werden soll
+    )
+    process {
+        # Account aktivieren
+        Set-ADUser -SamAccountName $Lernender.SamAccountName -Enabled $Aktivieren
+
+        # Aktivität Loggen
+        if ($Aktivieren) {
+            Write-Log "Lernender $_ wurde aktiviert" -Level DEBUG
+        }
+        else {
+            Write-Log "Lernender $_ wurde deaktiviert" -Level DEBUG
+        }
+    }
+}
 
 Function Add-Lernende {
     begin {
@@ -22,29 +100,30 @@ Function Add-Lernende {
     }
     
     process {
-        # Wenn Lerndende nicht in AD vorhanden, dann erstellen
-        $Lernende | Where-Object { !($AdLernende.SamAccountName -Contains $_.SamAccountName) } | ForEach-Object {
-            # TODO: Lernende aktivieren, wenn vorhanden ❗
+        $ComparedLernende = Compare-Object -ReferenceObject $AdLernende -DifferenceObject $Lernende -IncludeEqual
 
-            # Lernende erstellen
-            New-AdUser -Name $_.SamAccountName -GivenName $_.GivenName -Surname $_.Surname -DisplayName ($_.GivenName + " " + $_.Surname) -SamAccountName $_.SamAccountName -UserPrincipalName "$($_.SamAccountName)@$($Config.DOMAIN)"
-            -Office $Config.SCHULE_OU -AccountPassword  $Config.STANDARD_PW -ChangePasswordAtLogon $Config.ChangePasswordAtLogon -Path "OU=$($Config.LERNENDE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)" -Enabled $True
-            Write-Log "Lernender $_ wurde zum AD hinzugefügt" -Level DEBUG
-        }
-        Write-Log "Lernende wurden mit dem AD synchronisiert" -Level INFO
+        $NeueLernende = $ComparedLernende | Where-Object { $_.SideIndicator -eq '=>' }
+        $Synchronisierte = $ComparedLernende | Where-Object { $_.SideIndicator -eq '==' }
+        $EntfernteLernende = $ComparedLernende | Where-Object { $_.SideIndicator -eq '<=' }
 
-        # Wenn Lernende in AD vorhanden, dann überprüfen, ob sie aktiviert sind
-        $AdLernende | Where-Object { ($_.Enabled -eq $False) -and ($Lernende.SamAccountName -Contains $_.SamAccountName) } | ForEach-Object {
-            # Lernende aktivieren
-            $_ | Set-ADUser -Enabled $True 
-            Write-Log "Lernender $_ wurde aktiviert" -Level INFO
+        # Neue Lernende hinzufügen
+        foreach ($Lernender in $NeueLernende) {
+            Add-NewAdLernender $Lernender.InputObject
         }
+        Write-Log "$($NeueLernende.Count) Lernende wurden zum AD hinzugefügt" -Level INFO
 
-        # Wenn Lerndende nicht in CSV vorhanden, dann deaktivieren
-        $AdLernende | Where-Object { ($_.Enabled -eq $True) -and (!($Lernende.SamAccountName -Contains $_.SamAccountName)) } | ForEach-Object {
-            # Lernender deaktivieren
-            $_ | Set-ADUser -Enabled $False
-            Write-Log "Lernender $_ wurde im AD deaktiviert" -Level WARN
+        # Aktive Benutzer aktivieren
+        foreach ($Lernender in $Synchronisierte) {
+            Set-Lernender $Lernender.InputObject $true
         }
+        Write-Log "$($NeueLernende.Count) Lernende wurden aktiviert" -Level INFO
+
+        # Entfernte Lernende deaktivieren
+        foreach ($Lernender in $EntfernteLernende) {
+            Set-Lernender $Lernender.InputObject $false
+        }
+        Write-Log "$($NeueLernende.Count) Lernende wurden deaktiviert" -Level INFO
     }
 }
+
+Add-Lernende
