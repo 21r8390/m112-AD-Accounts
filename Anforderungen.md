@@ -32,7 +32,3 @@
 <!--
 Daten in PowerShell Dateien ändern, damit mit Zeitplan übereinstimmt
 -->
-
-<!--
-Eventuell Rechte für Verzeichnisse vergeben
- -->

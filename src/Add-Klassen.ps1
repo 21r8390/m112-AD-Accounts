@@ -24,12 +24,23 @@ Function Add-Klasse {
             -GroupScope Global `
             -Path "OU=$($Config.KLASSE_OU),OU=$($Config.SCHULE_OU),$($Config.DOMAIN)" `
             -Description "Klassengruppe für $Klasse"
+            
         Write-Log "Klasse $Klasse wurde zum AD hinzugefügt" -Level DEBUG
 
         # Verzeichniss erstellen
         [string]$KlassenVerzeichnis = "$($Config.BASE_HOME_PFAD)$($Config.KLASSE_OU)\$($Klasse)"
         New-Item -Path $KlassenVerzeichnis -ItemType Directory -Force | Out-Null
-        Write-Log "Klassen Verzeichnis $KlassenVerzeichnis erstellt" -Level DEBUG
+        if (Test-Path $KlassenVerzeichnis) {
+            # Zugriffsrechte setzen
+            $Acl = Get-Acl $KlassenVerzeichnis
+            $Acl.SetAccessRule($(New-Object System.Security.AccessControl.FileSystemAccessRule("$($Config.SCHULE_OU)\$Klasse", "FullControl", "Allow")))
+            Set-Acl $KlassenVerzeichnis $Acl
+
+            Write-Log "Klassen Verzeichnis $KlassenVerzeichnis erstellt" -Level DEBUG
+        }
+        else {
+            Write-Log "Klassen Verzeichnis $KlassenVerzeichnis konnte nicht erstellt werden" -Level ERROR
+        }
     }
 }
 

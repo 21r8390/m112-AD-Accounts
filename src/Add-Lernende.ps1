@@ -21,7 +21,17 @@ Function Add-NewAdLernender {
         # Home Verzeichnis erstellen
         [string]$HomeVerzeichnis = "$($Config.BASE_HOME_PFAD)$($Config.LERNENDE_OU)\$($Lernender.SamAccountName)"
         New-Item -Path $HomeVerzeichnis -ItemType Directory -Force | Out-Null
-        Write-Log "Home Verzeichnis $HomeVerzeichnis erstellt" -Level DEBUG
+        if (Test-Path $HomeVerzeichnis) {
+            # Zugriffsrechte setzen
+            $Acl = Get-Acl $HomeVerzeichnis
+            $Acl.SetAccessRule($(New-Object System.Security.AccessControl.FileSystemAccessRule("$($Config.SCHULE_OU)\$($Lernender.SamAccountName)", "FullControl", "Allow")))
+            Set-Acl $HomeVerzeichnis $Acl
+
+            Write-Log "Home Verzeichnis $HomeVerzeichnis erstellt" -Level DEBUG
+        }
+        else {
+            Write-Log "Home Verzeichnis $HomeVerzeichnis konnte nicht erstellt werden" -Level ERROR
+        }
 
         # Lernender hinzufügen
         New-ADUser -GivenName $Lernender.GivenName `

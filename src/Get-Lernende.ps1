@@ -53,7 +53,7 @@ Function Get-NormalizedSamAccountName {
             $Start = $Start.Substring(0, 3)
         }
         [string]$End = $Lernender.Surname -replace $ReplaceRegex
-        if ($End.Length -gt 14) {
+        if ($End.Length -gt 13) {
             $End = $End.Substring(0, 14)
         }
 
