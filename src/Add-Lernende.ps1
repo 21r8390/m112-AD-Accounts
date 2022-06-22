@@ -11,7 +11,7 @@
 . $PSScriptRoot\Get-Lernende.ps1
 
 # Fügt einen AD-Account hinzu
-Function Add-NewAdLernender {
+Function Add-Lernender {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
@@ -73,7 +73,7 @@ Function Add-Lernende {
 
         # Neue Lernende hinzufügen
         foreach ($Lernender in $Lernende | Where-Object { $_.SamAccountName -in $NeueLernende.SamAccountName } ) {
-            Add-NewAdLernender $Lernender
+            Add-Lernender $Lernender
         }
         Write-Log "$($NeueLernende.Count) Lernende wurden zum AD hinzugefügt" -Level INFO
 

@@ -20,8 +20,8 @@
 |  7  | Nicht mehr zugewiesene Benutzer aus den Gruppen entfernen                                                                                                                        |   3    |    ✔️    |
 |  8  | Alle Aktivitäten werden in einer Logdatei protokolliert. Die Einträge weisen Datum, Uhrzeit und eine Beschreibung der Aktivität (z.B. "AD-Benutzer peter.muster erstellt…") auf. |   3    |    ✔️    |
 |  9  | Strukturierter (mehrere Skripts, Funktionen, Menü), professioneller, gut lesbarer Code                                                                                           |   9    |    ✔️    |
-|  9  | Erstellen/Deaktivieren der AD-Accounts für alle Lernenden des BZT Frauenfeld (Wie bei Test Ja/Nein?)                                                                             |   9    |    ❌    |
-|  9  | Erstellen/Löschen der AD-Gruppen pro Klasse (Wie bei Test Ja/Nein?)                                                                                                              |   9    |    ❌    |
+|  9  | Erstellen/Deaktivieren der AD-Accounts für alle Lernenden des BZT Frauenfeld (Wie bei Test Ja/Nein?)                                                                             |   9    |    ✔️    |
+|  9  | Erstellen/Löschen der AD-Gruppen pro Klasse (Wie bei Test Ja/Nein?)                                                                                                              |   9    |    ✔️    |
 |  9  | Klassen Verzeichnisse umbenennen/erstellen                                                                                                                                       |   9    |    ❌    |
 |  9  | Home Verzeichnisse umbenennen/erstellen                                                                                                                                          |   9    |    ❌    |
 |  9  | Die Arbeitsschritte (z.B. AD-Benutzer deaktivieren) können einzeln oder alle zusammen ausgeführt werden                                                                          |   9    |    ❌    |
