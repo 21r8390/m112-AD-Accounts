@@ -30,8 +30,9 @@ function Show-Menu {
     Write-Host "4: AD-Benutzer, welche nicht im CSV vorhanden sind, deaktivieren"
     Write-Host "5: AD-Gruppen welche nicht im CSV vorhanden sind, loeen"
     Write-Host "6: AD-Benutzer den Gruppen zuweisen"
-    Write-Host "7: Klassenverzeichnis umbennen"
-    Write-Host "8: Homeverzeichnis umbennen"
+    Write-Host "7: Optionen 1-6 ausführen"
+    Write-Host "8: Klassenverzeichnis umbennen"
+    Write-Host "9: Homeverzeichnis umbennen"
     Write-Host "`n"
     Write-Host "Exit: Geben Sie 'Exit' ein um das Programm zu verlasen`n"
 }
@@ -96,12 +97,22 @@ function AD-automation {
                     pause
                 }
                 '7' {
+                    # Fürt die Optionen 1-6 aus
+                    Write-Log "Option $($selection.Trim()) wurde ausgewählt." -Level INFO
+                    Convert-XMLToCSV
+                    Add-Lernende
+                    Add-Klassen
+                    Remove-Lernende
+                    Remove-Klassen
+                    pause
+                }
+                '8' {
                     # Set-Klassenverzeichnis.ps1: Benennt das Klassenverzeichnisse um.
                     Write-Log "Option $($selection.Trim()) wurde ausgewählt." -Level INFO
                     Set-Klassenverzeichnis
                     pause
                 }
-                '8' {
+                '9' {
                     Write-Log "Option $($selection.Trim()) wurde ausgewählt." -Level INFO
                     Set-HomeVerzeichnis
                     pause
