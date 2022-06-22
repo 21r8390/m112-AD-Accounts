@@ -1,6 +1,6 @@
 # Author: Joaquin Koller & Manuel Schumacher
 # Datum: 22.05.2022
-# Version: 1.1
+# Version: 1.2
 # Funktionsbeschreibung: Erstellt alle OrganizationalUnits
 # Parameter: 
 # Bemerkungen:
@@ -21,12 +21,19 @@ Function New-BasisVerzeichnis {
             Write-Log "Basis Verzeichnis existiert bereits" -Level DEBUG
         }
         else {
-            New-Item -Path $Pfad -ItemType Directory -Force
-            Write-Log "Verzeichnis $Pfad erstellt" -Level INFO
+            New-Item -Path $Pfad -ItemType Directory -Force | Out-Null
+
+            if (Test-Path -Path $Pfad) {
+                Write-Log "Verzeichnis $Pfad erstellt" -Level INFO
+            }
+            else {
+                Write-Log "Verzeichnis $Pfad konnte nicht erstellt werden" -Level ERROR
+            }
         }
     }
 }
 
+# OUs zum Ad hinzufügen
 Function Add-OUs {
     [CmdletBinding()]
     Param(

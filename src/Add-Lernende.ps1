@@ -103,5 +103,3 @@ Function Add-Lernende {
         Write-Log "$($EntfernteLernende.Count) Lernende wurden deaktiviert" -Level INFO
     }
 }
-
-Add-Lernende

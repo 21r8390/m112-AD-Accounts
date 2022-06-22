@@ -1,6 +1,6 @@
 # Author: Joaquin Koller & Manuel Schumacher
 # Datum: 27.05.2022
-# Version: 1.1
+# Version: 1.3
 # Funktionsbeschreibung: Setzt die Klassen der Benutzer
 # Parameter: keine
 # Bemerkungen: Benutzer und Klassen müssen zuerst erstellt werden
@@ -23,13 +23,8 @@ Function Set-LernendeZuKlassen {
         $AdKlassen = Get-AdGroup -Filter '*'  -SearchBase "OU=$($Config.KLASSE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)"
         Write-Log "Es wurden $($AdKlassen.Count) Klassen im AD gefunden" -Level DEBUG
     }
-    
     process {
-
-        $AdKlassen | ForEach-Object {
-            # Aktuelle Klasse zwischenspeichern, für verschachtelte Schleifen
-            $Klasse = $_
-
+        foreach ($Klasse in $AdKlassen) {
             # Lernende, welche zur Klasse gehören auslesen
             $Members = $AdLernende | Where-Object { 
                 ($Lernende | Where-Object { 
