@@ -53,29 +53,6 @@ Function Add-NewAdLernender {
     }
 }
 
-# Aktiviert einen Lernenden aus dem AD
-Function Set-Lernender {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        $AdLernender, # Der aus dem AD Lernender, welcher aktiviert werden soll
-        [Parameter(Mandatory = $true)]
-        [boolean]$Aktivieren # Ob der Lernender aktiviert werden soll
-    )
-    process {
-        # Account aktivieren
-        Set-ADUser $AdLernender -Enabled $Aktivieren
-
-        # Aktivität Loggen
-        if ($Aktivieren) {
-            Write-Log "Lernender $_ wurde aktiviert" -Level DEBUG
-        }
-        else {
-            Write-Log "Lernender $_ wurde deaktiviert" -Level DEBUG
-        }
-    }
-}
-
 Function Add-Lernende {
     begin {
         # Alle Lernende und Klassen aus CSV
@@ -88,11 +65,11 @@ Function Add-Lernende {
     }
     
     process {
+        # Sucht lernende aus dem AD heraus
         $ComparedLernende = Compare-Object -ReferenceObject $AdLernende -DifferenceObject $Lernende -Property SamAccountName -IncludeEqual
 
         $NeueLernende = $ComparedLernende | Where-Object { $_.SideIndicator -eq '=>' }
         $Synchronisierte = $ComparedLernende | Where-Object { $_.SideIndicator -eq '==' }
-        $EntfernteLernende = $ComparedLernende | Where-Object { $_.SideIndicator -eq '<=' }
 
         # Neue Lernende hinzufügen
         foreach ($Lernender in $Lernende | Where-Object { $_.SamAccountName -in $NeueLernende.SamAccountName } ) {
@@ -102,14 +79,9 @@ Function Add-Lernende {
 
         # Aktive Benutzer aktivieren
         foreach ($Lernender in $AdLernende | Where-Object { $_.SamAccountName -in $Synchronisierte.SamAccountName } ) {
-            Set-Lernender $Lernender $true
+            Set-ADUser $Lernender -Enabled $Aktivieren
+            Write-Log "Lernender $($Lernende.SamAccountName) wurde aktiviert" -Level DEBUG
         }
         Write-Log "$($Synchronisierte.Count) Lernende wurden aktiviert" -Level INFO
-
-        # Entfernte Lernende deaktivieren
-        foreach ($Lernender in $AdLernende | Where-Object { $_.SamAccountName -in $EntfernteLernende.SamAccountName } ) {
-            Set-Lernender $Lernender $false
-        }
-        Write-Log "$($EntfernteLernende.Count) Lernende wurden deaktiviert" -Level INFO
     }
 }
