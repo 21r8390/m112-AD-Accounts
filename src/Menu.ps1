@@ -17,8 +17,13 @@
 . $PSScriptRoot\Write-Log.ps1
 
 # AD Modul importieren
-Import-Module ActiveDirectory -erroraction 'silentlycontinue'
-
+try {
+    Import-Module ActiveDirectory -ErrorAction Stop
+}
+catch {
+    # Fehlermeldung anzeigen
+    Write-Log "Das Modul ActiveDirectory konnte nicht installiert werden! Es ist nur unter Windows Server verfügbar..." -Level ERROR
+}
 
 # Zeigt das Menu in der Konsole an
 function Show-Menu {
