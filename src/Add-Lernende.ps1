@@ -20,7 +20,13 @@ Function Add-Lernender {
     process {
         # Home Verzeichnis erstellen
         [string]$HomeVerzeichnis = "$($Config.BASE_HOME_PFAD)$($Config.LERNENDE_OU)\$($Lernender.SamAccountName)"
-        New-Item -Path $HomeVerzeichnis -ItemType Directory -Force | Out-Null
+        if (Test-Path $HomeVerzeichnis) {
+            Write-Log "Home Verzeichnis $HomeVerzeichnis existiert bereits. Keines wird hinterlegt!" -Level ERROR
+            $HomeVerzeichnis = ""
+        }
+        else {
+            New-Item -Path $HomeVerzeichnis -ItemType Directory -Force | Out-Null
+        }
 
         # Lernender hinzufügen
         New-ADUser -GivenName $Lernender.GivenName `
@@ -43,19 +49,21 @@ Function Add-Lernender {
             # Zugriffsrechte setzen
             $Acl = Get-Acl $HomeVerzeichnis
             $Acl.SetAccessRule($(New-Object System.Security.AccessControl.FileSystemAccessRule("$($Config.SCHULE_OU)\$($Lernender.SamAccountName)", "FullControl", "Allow")))
+            # Vererbungsrechte deaktivieren
             $Acl.SetAccessRuleProtection($True, $False)
             Set-Acl $HomeVerzeichnis $Acl
     
             Write-Log "Home Verzeichnis $HomeVerzeichnis erstellt" -Level DEBUG
         }
         else {
-            Write-Log "Home Verzeichnis $HomeVerzeichnis konnte nicht erstellt werden" -Level ERROR
+            Write-Log "Berechtigungen für Home Verzeichnis $HomeVerzeichnis konnten nicht gesetzt werden" -Level WARN
         }
 
         Write-Log "Lernender $_ wurde zum AD hinzugefügt" -Level DEBUG
     }
 }
 
+# Fügt einen AD-Account hinzu oder aktiviert diese
 Function Add-Lernende {
     begin {
         # Alle Lernende und Klassen aus CSV

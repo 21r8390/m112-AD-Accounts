@@ -1,35 +1,41 @@
 # Author: Joaquin Koller & Manuel Schumacher
 # Datum: 22.06.2022
 # Version: 1.0
-# Funktionsbeschreibung: Benennt das Klassenverzeichnise um.
+# Funktionsbeschreibung: Benennt das Klassenverzeichnis um
 # Parameter: keine
-# Bemerkungen:
+# Bemerkungen: Benutzereingaben werden erwartet
 #-----
 
 # Konfigurationen und Methoden laden
 . $PSScriptRoot\Config.ps1
 
 # Benennt das Klassenverzeichnisse um.
-Function Set-Klassenverzeichnis {
-    begin{
+Function Set-KlassenVerzeichnis {
+    begin {
         # Fragt den Benutzer ab
-        $oldName = Read-Host "Alter Verzeichnisname: "
-        $newName = Read-Host "Neuer Verzeichnisname: "
-        Write-Log "Benutzereingaben: Alter Verzeichnisname: $($oldName) / Neuer Verzeichnisname $($newName)" -Level INFO
+        [string]$OldName = Read-Host "Alter Verzeichnisname: "
+        [string]$NewName = Read-Host "Neuer Verzeichnisname: "
+        Write-Log "Benutzereingaben: Alter Verzeichnisname: $OldName / Neuer Verzeichnisname $NewName" -Level DEBUG
 
         # Pfad zum Verzeichnis das umbenannt wird
-        [string]$oldDirectory = "$($Config.BASE_HOME_PFAD)$($Config.KLASSE_OU)\$($oldName)"
+        [string]$OldDirectory = "$($Config.BASE_HOME_PFAD)$($Config.KLASSE_OU)\$($OldName)"
         # Pfad mit neuem Verzeichnisname
-        [string]$newDirectory = "$($Config.BASE_HOME_PFAD)$($Config.KLASSE_OU)\$($newName)"
+        [string]$NewDirectory = "$($Config.BASE_HOME_PFAD)$($Config.KLASSE_OU)\$($NewName)"
     }
     process {
+        if (!Test-Path -Path $OldDirectory) {
+            Write-Log "Altes Verzeichnis $OldDirectory existiert nicht" -Level ERROR
+            return
+        }
+
         # Testet ob das Verzeichnis bereits existiert
-        if(!Test-Path -Path $newDirectory){
-            # Nennt das Verzeichnis um
-            Rename-Item -Path $oldDirectory -NewName $newDirectory
-        }else{
+        if (Test-Path -Path $NewDirectory) {
             Write-Log "Das Verzeichnis existiert bereits" -Level WARN
-            Write-Host "Das Verzeichnis existiert bereits!" -ForegroundColor Yellow
+        }
+        else {
+            # Nennt das Verzeichnis um
+            Rename-Item -Path $OldDirectory -NewName $NewName
+            Write-Log "Verzeichnis $OldDirectory wurde umbenannt in $NewDirectory" -Level INFO
         }
         
     }

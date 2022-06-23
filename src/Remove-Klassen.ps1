@@ -4,12 +4,14 @@
 # Funktionsbeschreibung: Löscht die Klassen, welche nicht mehr im XML sind  
 # Parameter: keine
 # Bemerkungen: OUs müssen zuerst erstellt werden
+#              Klassenverzeichnis wird auch entfernt
 #-----
 
 # Konfigurationen und Methoden laden
 . $PSScriptRoot\Config.ps1
 . $PSScriptRoot\Get-Lernende.ps1
 
+# Löscht eine Klasse mit ihrem Verzeichnis
 function Remove-Klasse {
     [CmdletBinding()]
     param (

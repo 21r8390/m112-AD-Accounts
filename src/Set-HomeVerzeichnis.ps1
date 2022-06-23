@@ -3,7 +3,8 @@
 # Version: 1.6
 # Funktionsbeschreibung: Benennt ein Home Verzeichnis eines Lernenden um
 # Parameter: (Optional) Der Benutzername des Lernenden
-# Bemerkungen: Es werden Eingaben benötigt
+#            (Optional) Das neue Home Verzeichnis des Lernenden
+# Bemerkungen: Benutzereingaben werden erwartet
 #-----
 
 # Konfigurationen und Methoden laden
@@ -14,7 +15,9 @@ Function Set-HomeVerzeichnis {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $false)]
-        [string]$AdUsername # Der Benutzername des Lernenden
+        [string]$AdUsername, # Der Benutzername des Lernenden
+        [Parameter(Mandatory = $false)]
+        [string]$HomeVerzeichnis # Das neue Home Verzeichnis des Lernenden
     )
     
     begin {
@@ -24,9 +27,10 @@ Function Set-HomeVerzeichnis {
     }
     
     process {
+        # Benutzername abfragen (Leer nicht erlaubt)
         while (-not $AdUsername ) {
             $AdUsername = Read-Host "Von welchem Lernenden sollte das Home Verzeichnis umbenannt werden? (Vorname.Nachname)"
-        }¦
+        }
         Write-Log "Benutzer $AdUsername wird umbenannt" -Level DEBUG
 
         # Lernende aus AD auslesen
@@ -38,12 +42,12 @@ Function Set-HomeVerzeichnis {
             return;
         }
 
-        # Neues Home Verzeichnis abfragen
-        [string]$HomeVerzeichnis = ""
-        do {
+        # Neues Home Verzeichnis abfragen (Leer nicht erlaubt)
+        while (-not $HomeVerzeichnis) {
             $HomeVerzeichnis = Read-Host "Wie sollte das neue Home Verzeichnis heissen? (Ordnername)"
-        }while (-not $HomeVerzeichnis)
+        }
 
+        # Testen, ob Verzeichnis bereits von einem anderen Lernenden verwendet wird
         $HomeVerzeichnis = "$($Config.BASE_HOME_PFAD)$($Config.LERNENDE_OU)\$HomeVerzeichnis"
         if (Test-Path $HomeVerzeichnis) {
             Write-Log "Das Home Verzeichnis $HomeVerzeichnis existiert bereits" -Level ERROR
@@ -61,8 +65,10 @@ Function Set-HomeVerzeichnis {
             # Neues Verzeichnis erstellen
             [string]$HomeVerzeichnis = "$($Config.BASE_HOME_PFAD)$($Config.LERNENDE_OU)\$($Lernender.SamAccountName)"
             New-Item -Path $HomeVerzeichnis -ItemType Directory -Force | Out-Null
+            # Zugriffsrechte setzen
             $Acl = Get-Acl $HomeVerzeichnis
             $Acl.SetAccessRule($(New-Object System.Security.AccessControl.FileSystemAccessRule("$($Config.SCHULE_OU)\$($Lernender.SamAccountName)", "FullControl", "Allow")))
+            # Vererbungsrechte deaktivieren
             $Acl.SetAccessRuleProtection($True, $False)
             Set-Acl $HomeVerzeichnis $Acl
     
