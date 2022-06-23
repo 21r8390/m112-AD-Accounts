@@ -13,6 +13,7 @@
 . $PSScriptRoot\Add-OUs.ps1
 . $PSScriptRoot\ConvertXML-ToCSV.ps1
 . $PSScriptRoot\Get-Lernende.ps1
+. $PSScriptRoot\Set-Lernende.ps1
 . $PSScriptRoot\Set-LernendeZuKlassen
 . $PSScriptRoot\Remove-Lernende.ps1
 . $PSScriptRoot\Remove-Klassen.ps1
@@ -25,15 +26,16 @@ Function Show-Menu {
     
     Write-Host "================ Projekt M122 AD-Accounts ================`n"
     
-    Write-Host "1: XML zu CSV konvertieren"
-    Write-Host "2: AD-Accounts für die Lernenden erstellen"
-    Write-Host "3: AD-Gruppen für die Klassen erstellen"
-    Write-Host "4: AD-Benutzer, welche nicht im CSV vorhanden sind, deaktivieren"
-    Write-Host "5: AD-Gruppen welche nicht im CSV vorhanden sind, löschen"
-    Write-Host "6: AD-Benutzer den Gruppen zuweisen"
-    Write-Host "7: Optionen 1-6 ausführen"
-    Write-Host "8: Klassenverzeichnis umbennen"
-    Write-Host "9: Homeverzeichnis umbennen"
+    Write-Host " 1: XML zu CSV konvertieren"
+    Write-Host " 2: AD-Accounts für die Lernenden erstellen"
+    Write-Host " 3: AD-Benutzer, welche im CSV vorhanden sind, aktivieren"
+    Write-Host " 4: AD-Benutzer, welche nicht im CSV vorhanden sind, deaktivieren"
+    Write-Host " 5: AD-Gruppen für die Klassen erstellen"
+    Write-Host " 6: AD-Gruppen, welche nicht im CSV vorhanden sind, löschen"
+    Write-Host " 7: AD-Benutzer den Gruppen zuweisen"
+    Write-Host " 8: Optionen 1-7 ausführen"
+    Write-Host " 9: Klassenverzeichnis umbennen"
+    Write-Host "10: Homeverzeichnis umbennen"
     Write-Host "`n"
     Write-Host "Exit: Geben Sie 'Exit' ein um das Programm zu verlasen`n"
 }
@@ -76,35 +78,41 @@ Function New-AdAutomation {
                     Add-Lernende
                 }
                 '3' {
-                    # Add-Klassen.ps1: AD-Gruppen für die Klassen erstellen
-                    Add-Klassen
+                    # Set-Lernende.ps1: AD-Benutzer, welche im CSV vorhanden sind, aktivieren
+                    Set-Lernende
                 } 
                 '4' {
-                    # Remove-Lernende.ps1: welche nicht im CSV vorhanden sind, deaktivieren
+                    # Remove-Lernende.ps1: AD-Benutzer, welche nicht im CSV vorhanden sind, deaktivieren
                     Remove-Lernende
                 }
                 '5' {
+                    # Add-Klassen.ps1: AD-Gruppen für die Klassen erstellen
+                    Add-Klassen
+                }
+                '6' {
                     # Remove-Klassen.ps1: welche nicht im CSV vorhanden sind. loeschen
                     Remove-Klassen
                 } 
-                '6' {
+                '7' {
                     # Set-LernendeZuKlassen.ps1: AD-Benutzer den Gruppen zuweisen
                     Set-LernendeZuKlassen
                 }
-                '7' {
-                    # Fürt die Optionen 1-6 aus
+                '8' {
+                    # Fürt die Optionen 1-7 aus
+                    Add-OUs
                     Convert-XMLToCSV
                     Add-Lernende
-                    Add-Klassen
+                    Set-Lernende
                     Remove-Lernende
+                    Add-Klassen
                     Remove-Klassen
                     Set-LernendeZuKlassen
                 }
-                '8' {
+                '9' {
                     # Set-Klassenverzeichnis.ps1: Benennt das Klassenverzeichnis um
                     Set-KlassenVerzeichnis
                 }
-                '9' {
+                '10' {
                     # Set-HomeVerzeichnis.ps1: Benennt das Homeverzeichnis um
                     Set-HomeVerzeichnis
                 }

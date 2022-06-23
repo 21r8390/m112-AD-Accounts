@@ -63,7 +63,7 @@ Function Add-Lernender {
     }
 }
 
-# Fügt einen AD-Account hinzu oder aktiviert diese
+# Fügt einen AD-Account hinzu 
 Function Add-Lernende {
     begin {
         # Alle Lernende und Klassen aus CSV
@@ -85,20 +85,13 @@ Function Add-Lernende {
         # Sucht lernende aus dem AD heraus
         $ComparedLernende = Compare-Object -ReferenceObject $AdLernende -DifferenceObject $Lernende -Property SamAccountName -IncludeEqual
 
+        # Lernende, welche neu im CSV sind
         $NeueLernende = $ComparedLernende | Where-Object { $_.SideIndicator -eq '=>' }
-        $Synchronisierte = $ComparedLernende | Where-Object { $_.SideIndicator -eq '==' }
 
         # Neue Lernende hinzufügen
         foreach ($Lernender in $Lernende | Where-Object { $_.SamAccountName -in $NeueLernende.SamAccountName } ) {
             Add-Lernender $Lernender
         }
         Write-Log "$($NeueLernende.Count) Lernende wurden zum AD hinzugefügt" -Level INFO
-
-        # Aktive Benutzer aktivieren
-        foreach ($Lernender in $AdLernende | Where-Object { $_.SamAccountName -in $Synchronisierte.SamAccountName } ) {
-            Set-ADUser $Lernender -Enabled $true
-            Write-Log "Lernender $($Lernender.SamAccountName) wurde aktiviert" -Level DEBUG
-        }
-        Write-Log "$($Synchronisierte.Count) Lernende wurden aktiviert" -Level INFO
     }
 }

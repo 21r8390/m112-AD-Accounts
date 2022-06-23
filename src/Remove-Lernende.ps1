@@ -25,13 +25,17 @@ Function Remove-Lernende {
         # Sucht lernende aus dem AD heraus
         $ComparedLernende = Compare-Object -ReferenceObject $AdLernende -DifferenceObject $Lernende -Property SamAccountName -IncludeEqual
 
+        # Entfernt Lernende, welche nicht mehr im XML sind
         $EntfernteLernende = $ComparedLernende | Where-Object { $_.SideIndicator -eq '<=' }
 
+        # Lernende heraussuchen, welche nicht mehr im AD sind und aktiv sind
+        $AdLernende = $AdLernende | Where-Object { $_.SamAccountName -in $EntfernteLernende.SamAccountName -and $_.Enabled }
+        
         # Entfernte Lernende deaktivieren
-        foreach ($Lernender in $AdLernende | Where-Object { $_.SamAccountName -in $EntfernteLernende.SamAccountName } ) {
+        foreach ($Lernender in  $AdLernende) {
             Set-ADUser $Lernender -Enabled $false
             Write-Log "Lernender $($Lernender.SamAccountName) wurde deaktiviert" -Level DEBUG
         }
-        Write-Log "$($EntfernteLernende.Count) Lernende wurden deaktiviert" -Level INFO
+        Write-Log "$($AdLernende.Count) Lernende wurden deaktiviert" -Level INFO
     }
 }
