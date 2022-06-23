@@ -34,6 +34,7 @@ Function Add-Klasse {
             # Zugriffsrechte setzen
             $Acl = Get-Acl $KlassenVerzeichnis
             $Acl.SetAccessRule($(New-Object System.Security.AccessControl.FileSystemAccessRule("$($Config.SCHULE_OU)\$Klasse", "FullControl", "Allow")))
+            $Acl.SetAccessRuleProtection($True, $False)
             Set-Acl $KlassenVerzeichnis $Acl
 
             Write-Log "Klassen Verzeichnis $KlassenVerzeichnis erstellt" -Level DEBUG

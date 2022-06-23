@@ -21,17 +21,6 @@ Function Add-Lernender {
         # Home Verzeichnis erstellen
         [string]$HomeVerzeichnis = "$($Config.BASE_HOME_PFAD)$($Config.LERNENDE_OU)\$($Lernender.SamAccountName)"
         New-Item -Path $HomeVerzeichnis -ItemType Directory -Force | Out-Null
-        if (Test-Path $HomeVerzeichnis) {
-            # Zugriffsrechte setzen
-            $Acl = Get-Acl $HomeVerzeichnis
-            $Acl.SetAccessRule($(New-Object System.Security.AccessControl.FileSystemAccessRule("$($Config.SCHULE_OU)\$($Lernender.SamAccountName)", "FullControl", "Allow")))
-            Set-Acl $HomeVerzeichnis $Acl
-
-            Write-Log "Home Verzeichnis $HomeVerzeichnis erstellt" -Level DEBUG
-        }
-        else {
-            Write-Log "Home Verzeichnis $HomeVerzeichnis konnte nicht erstellt werden" -Level ERROR
-        }
 
         # Lernender hinzufügen
         New-ADUser -GivenName $Lernender.GivenName `
@@ -45,10 +34,24 @@ Function Add-Lernender {
             -AccountPassword $Config.STANDARD_PW `
             -ChangePasswordAtLogon $Config.CHANGE_PASSWORD_AT_LOGON `
             -HomeDrive "H:" `
-            -HomeDirectory $HomeVerzeichnis `
+            -HomeDirectory "H:\$($Lernender.SamAccountName)" `
+            -ProfilePath $HomeVerzeichnis `
             -Path "OU=$($Config.LERNENDE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)" `
             -Enabled $Config.USER_ENABLED
             
+        if (Test-Path $HomeVerzeichnis) {
+            # Zugriffsrechte setzen
+            $Acl = Get-Acl $HomeVerzeichnis
+            $Acl.SetAccessRule($(New-Object System.Security.AccessControl.FileSystemAccessRule("$($Config.SCHULE_OU)\$($Lernender.SamAccountName)", "FullControl", "Allow")))
+            $Acl.SetAccessRuleProtection($True, $False)
+            Set-Acl $HomeVerzeichnis $Acl
+    
+            Write-Log "Home Verzeichnis $HomeVerzeichnis erstellt" -Level DEBUG
+        }
+        else {
+            Write-Log "Home Verzeichnis $HomeVerzeichnis konnte nicht erstellt werden" -Level ERROR
+        }
+
         Write-Log "Lernender $_ wurde zum AD hinzugefügt" -Level DEBUG
     }
 }
@@ -60,8 +63,14 @@ Function Add-Lernende {
         Write-Log "Es wurden $($Lernende.Count) Lernende im CSV gefunden" -Level DEBUG
 
         # Lernende aus AD auslesen
-        $AdLernende = Get-AdUser -Filter '*'  -SearchBase "OU=$($Config.LERNENDE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)"
-        Write-Log "Es wurden $($AdLernende.Count) Klassen im AD gefunden" -Level DEBUG
+        $AdLernende = Get-AdUser -Filter '*' -SearchBase "OU=$($Config.LERNENDE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)"
+        if ($AdLernende) {
+            Write-Log "Es wurden $($AdLernende.Count) Klassen im AD gefunden" -Level DEBUG
+        }
+        else {
+            $AdLernende = @()
+            Write-Log "Es wurden keine Lernende im AD gefunden" -Level DEBUG
+        }
     }
     
     process {
