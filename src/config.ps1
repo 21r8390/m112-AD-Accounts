@@ -15,11 +15,11 @@
 $Config = @{
     # Files
     BASE_HOME_PFAD           = "C:\Freigaben\"; # Pfad wo die Verzeichnisse erstellt werden
-    XML_PFAD                 = ("schueler.xml" |  Resolve-Path); # Pfad zur XML-Datei 
-    CSV_PFAD                 = ("schueler.csv" |  Resolve-Path); # Pfad in welcher die CSV-Werte gespeichert werden sollen
+    XML_PFAD                 = "schueler.xml"; # Pfad zur XML-Datei 
+    CSV_PFAD                 = "schueler.csv" ; # Pfad in welcher die CSV-Werte gespeichert werden sollen
     DELIMITER                = ";"; # Trennzeichen für CSV-Datei
     # Logging
-    LOG_PFAD                 = ""; # Pfad in welcher die Logs gespeichert werden sollen
+    LOG_PFAD                 = "C:\logs.log"; # Pfad in welcher die Logs gespeichert werden sollen
     LOG_LEVEL                = "INFO"; # Level für Logs
     # AD
     DOMAIN                   = "DC=bztf,DC=local";

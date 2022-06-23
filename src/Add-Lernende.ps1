@@ -121,9 +121,9 @@ Function Add-Lernender {
             -Enabled $Config.USER_ENABLED
             
         # Home Verzeichnis erstellen
-        New-HomeVerzeichnis $Lernender
+        New-HomeVerzeichnis (Get-ADUser -Identity $Lernender.SamAccountName)
 
-        Write-Log "Lernender $_ wurde zum AD hinzugefügt" -Level INFO
+        Write-Log "Lernender $($Lernender.SamAccountName) wurde zum AD hinzugefügt" -Level INFO
     }
 }
 
