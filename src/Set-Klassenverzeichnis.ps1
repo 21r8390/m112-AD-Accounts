@@ -23,7 +23,7 @@ Function Set-KlassenVerzeichnis {
         [string]$NewDirectory = "$($Config.BASE_HOME_PFAD)$($Config.KLASSE_OU)\$($NewName)"
     }
     process {
-        if (!Test-Path -Path $OldDirectory) {
+        if (-not (Test-Path -Path $OldDirectory)) {
             Write-Log "Altes Verzeichnis $OldDirectory existiert nicht" -Level ERROR
             return
         }
