@@ -60,7 +60,6 @@ Function New-AdAutomation {
     process {
         # Switchcase ruft die entsprechenden funktionen auf
         while ($True) {
-            Clear-Host
             Show-Menu
 
             # Menüoption auswählen

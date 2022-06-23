@@ -10,65 +10,71 @@
 . $PSScriptRoot\Config.ps1
 . $PSScriptRoot\Get-Lernende.ps1
 
-# Fügt einen AD-Account hinzu
-Function Add-Lernender {
+# Einzigartier UPN erstellen
+function Get-UniqueUPN {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        $Lernender, # Lernender, welcher zum Ad hinzufügt werden soll
+        $Lernender, # Lernender, der den UPN erstellen möchte
         [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.HashSet[string]]$ExistierendeUPDNamen # Lernende aus dem AD
-    )    
+        $ExistierendeUPN # UPNs, die bereits existieren
+    )
     process {
-        # Home Verzeichnis erstellen
-        [string]$HomeVerzeichnis = "$($Config.BASE_HOME_PFAD)$($Config.LERNENDE_OU)\$($Lernender.SamAccountName)"
-        if (Test-Path $HomeVerzeichnis) {
-            Write-Log "Home Verzeichnis $HomeVerzeichnis existiert bereits. Keines wird hinterlegt!" -Level ERROR
-            $HomeVerzeichnis = ""
-        }
-        else {
-            New-Item -Path $HomeVerzeichnis -ItemType Directory -Force | Out-Null
-        }
-
         # UserPrincipalName erstellen
-        [string]$upn = "@"
-        $Config.DOMAIN | Select-String -Pattern "(DC=)[\w]+" -AllMatches | ForEach-Object {
+        [string]$Upn = "@"
+        ($Config.DOMAIN | Select-String -Pattern "(DC=)[\w]+" -AllMatches).Matches | ForEach-Object {
             # Domain Teil
-            if (!$upn.EndsWith("@")) {
-                $upn += "."
+            if (!$Upn.EndsWith("@")) {
+                $Upn += "."
             }
-            $upn += $_.Value.Substring(3, $_.Value.Length - 3) 
+            $Upn += $_.Value.Substring(3, $_.Value.Length - 3) 
         } 
-        [string]$beginning = $Lernender.GivenName + "." + $Lernender.Surname
+
         # Einzigartigkeit gewährleisten
-        if ($ExistierendeUPDNamen.Contains($beginning + $upn)) {
-            [int]$index = 0
-            while ($ExistierendeUPDNamen.Contains("$beginning-$index$upn")) {
+        [string]$beginning = $Lernender.GivenName + "." + $Lernender.Surname
+        if ($ExistierendeUPN.Contains($beginning + $Upn)) {
+            [int]$index = 1
+            while ($ExistierendeUPN.Contains("$beginning-$index$Upn")) {
                 $index++
             }
-            $upn = "$beginning-$index$upn"
+            $Upn = "$beginning-$index$Upn"
         }
         else {
-            $upn = $beginning + $upn
+            $Upn = $beginning + $Upn
+        }
+        # Zu existierende UPNs hinzufügen
+        $ExistierendeUPN.Add($Upn) | Out-Null
+        Write-Log "Einzigartiger UPN $Upn wurde erstellt!" -Level DEBUG
+
+        return $Upn
+    }
+}
+
+# Erstellt ein Home-Verzeichnis für den Lernender
+Function New-HomeVerzeichnis {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        $Lernender # Lernenden für den das Home-Verzeichnis erstellt werden soll
+    )
+    
+    begin {
+        [string]$HomeVerzeichnis = "$($Config.BASE_HOME_PFAD)$($Config.LERNENDE_OU)\$($Lernender.SamAccountName)"
+    }
+    
+    process {
+        if (Test-Path $HomeVerzeichnis) {
+            # Home Verzeichnis existiert bereits
+            Write-Log "Home Verzeichnis $HomeVerzeichnis existiert bereits. Keines wird hinterlegt!" -Level ERROR
+            return
+        }
+        else {
+            # Home Verzeichnis erstellen
+            New-Item -Path $HomeVerzeichnis -ItemType Directory -Force | Out-Null
+            Write-Log "Home Verzeichnis $HomeVerzeichnis wurde erstellt!" -Level DEBUG
         }
 
-        # Lernender hinzufügen
-        New-ADUser -GivenName $Lernender.GivenName `
-            -Surname $Lernender.Surname `
-            -Initials ($Lernender.GivenName.Substring(0, 1) + $Lernender.Surname.Substring(0, 2)).ToUpper() `
-            -DisplayName ($Lernender.GivenName + " " + $Lernender.Surname) `
-            -Name $Lernender.SamAccountName `
-            -SamAccountName $Lernender.SamAccountName `
-            -UserPrincipalName $upn `
-            -Office $Config.SCHULE_OU `
-            -AccountPassword $Config.STANDARD_PW `
-            -ChangePasswordAtLogon $Config.CHANGE_PASSWORD_AT_LOGON `
-            -HomeDrive "H:" `
-            -HomeDirectory "H:\$($Lernender.SamAccountName)" `
-            -ProfilePath $HomeVerzeichnis `
-            -Path "OU=$($Config.LERNENDE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)" `
-            -Enabled $Config.USER_ENABLED
-            
+        # Berechtigungen setzen
         if (Test-Path $HomeVerzeichnis) {
             # Zugriffsrechte setzen
             $Acl = Get-Acl $HomeVerzeichnis
@@ -77,13 +83,47 @@ Function Add-Lernender {
             $Acl.SetAccessRuleProtection($True, $False)
             Set-Acl $HomeVerzeichnis $Acl
     
-            Write-Log "Home Verzeichnis $HomeVerzeichnis erstellt" -Level DEBUG
+            Write-Log "Berechtigungen für Home Verzeichnis $HomeVerzeichnis wurden erstellt" -Level DEBUG
         }
         else {
             Write-Log "Berechtigungen für Home Verzeichnis $HomeVerzeichnis konnten nicht gesetzt werden" -Level WARN
         }
 
-        Write-Log "Lernender $_ wurde zum AD hinzugefügt" -Level DEBUG
+        # Home Verzeichnis setzen
+        Set-AdUser $Lernender -HomeDrive "H:" -HomeDirectory "H:\$($Lernender.SamAccountName)" -ProfilePath $HomeVerzeichnis
+    }
+}
+
+# Fügt einen AD-Account hinzu
+Function Add-Lernender {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        $Lernender, # Lernender, welcher zum Ad hinzufügt werden soll
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.HashSet[string]]$ExistierendeUPN # Lernende aus dem AD
+    )    
+    process {
+        [string]$Upn = Get-UniqueUPN $Lernender $ExistierendeUPN
+
+        # Lernender hinzufügen
+        New-ADUser -GivenName $Lernender.GivenName `
+            -Surname $Lernender.Surname `
+            -Initials ($Lernender.GivenName.Substring(0, 1) + $Lernender.Surname.Substring(0, 2)).ToUpper() `
+            -DisplayName ($Lernender.GivenName + " " + $Lernender.Surname) `
+            -Name $Lernender.SamAccountName `
+            -SamAccountName $Lernender.SamAccountName `
+            -UserPrincipalName $Upn `
+            -Office $Config.SCHULE_OU `
+            -AccountPassword $Config.STANDARD_PW `
+            -ChangePasswordAtLogon $Config.CHANGE_PASSWORD_AT_LOGON `
+            -Path "OU=$($Config.LERNENDE_OU),OU=$($Config.SCHULE_OU), $($Config.DOMAIN)" `
+            -Enabled $Config.USER_ENABLED
+            
+        # Home Verzeichnis erstellen
+        New-HomeVerzeichnis $Lernender
+
+        Write-Log "Lernender $_ wurde zum AD hinzugefügt" -Level INFO
     }
 }
 
@@ -112,14 +152,20 @@ Function Add-Lernende {
         # Lernende, welche neu im CSV sind
         $NeueLernende = $ComparedLernende | Where-Object { $_.SideIndicator -eq '=>' }
 
-        [System.Collections.Generic.HashSet[string]]$ExistierendeUPDNamen = New-Object System.Collections.Generic.HashSet[string]
+        # Existierende UserPrincipalNames auslesen (Keine Dupplikate)
+        [System.Collections.Generic.HashSet[string]]$ExistierendeUPN = New-Object System.Collections.Generic.HashSet[string]
         $AdLernende | ForEach-Object {
-            $ExistierendeUPDNamen.Add($_.UserPrincipalName) | Out-Null
+            $ExistierendeUPN.Add($_.UserPrincipalName) | Out-Null
+        }
+        # Wenn Leer, dann leer setzen
+        if ($ExistierendeUPN.Count -le 0) {
+            $ExistierendeUPN.Add(" ")
+            Write-Log "Es existieren keine bisherigen AD Lernende" -Level DEBUG
         }
 
         # Neue Lernende hinzufügen
         foreach ($Lernender in $Lernende | Where-Object { $_.SamAccountName -in $NeueLernende.SamAccountName } ) {
-            Add-Lernender $Lernender $ExistierendeUPDNamen
+            Add-Lernender $Lernender $ExistierendeUPN
         }
         Write-Log "$($NeueLernende.Count) Lernende wurden zum AD hinzugefügt" -Level INFO
     }
