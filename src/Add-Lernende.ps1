@@ -15,7 +15,9 @@ Function Add-Lernender {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        $Lernender # Lernender, welcher zum Ad hinzufügt werden soll
+        $Lernender, # Lernender, welcher zum Ad hinzufügt werden soll
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.HashSet[string]]$ExistierendeUPDNamen # Lernende aus dem AD
     )    
     process {
         # Home Verzeichnis erstellen
@@ -28,6 +30,28 @@ Function Add-Lernender {
             New-Item -Path $HomeVerzeichnis -ItemType Directory -Force | Out-Null
         }
 
+        # UserPrincipalName erstellen
+        [string]$upn = "@"
+        $Config.DOMAIN | Select-String -Pattern "(DC=)[\w]+" -AllMatches | ForEach-Object {
+            # Domain Teil
+            if (!$upn.EndsWith("@")) {
+                $upn += "."
+            }
+            $upn += $_.Value.Substring(3, $_.Value.Length - 3) 
+        } 
+        [string]$beginning = $Lernender.GivenName + "." + $Lernender.Surname
+        # Einzigartigkeit gewährleisten
+        if ($ExistierendeUPDNamen.Contains($beginning + $upn)) {
+            [int]$index = 0
+            while ($ExistierendeUPDNamen.Contains("$beginning-$index$upn")) {
+                $index++
+            }
+            $upn = "$beginning-$index$upn"
+        }
+        else {
+            $upn = $beginning + $upn
+        }
+
         # Lernender hinzufügen
         New-ADUser -GivenName $Lernender.GivenName `
             -Surname $Lernender.Surname `
@@ -35,7 +59,7 @@ Function Add-Lernender {
             -DisplayName ($Lernender.GivenName + " " + $Lernender.Surname) `
             -Name $Lernender.SamAccountName `
             -SamAccountName $Lernender.SamAccountName `
-            -UserPrincipalName "$($Lernender.GivenName + "." + $Lernender.Surname)@$($Config.SCHULE_OU)" `
+            -UserPrincipalName $upn `
             -Office $Config.SCHULE_OU `
             -AccountPassword $Config.STANDARD_PW `
             -ChangePasswordAtLogon $Config.CHANGE_PASSWORD_AT_LOGON `
@@ -88,9 +112,14 @@ Function Add-Lernende {
         # Lernende, welche neu im CSV sind
         $NeueLernende = $ComparedLernende | Where-Object { $_.SideIndicator -eq '=>' }
 
+        [System.Collections.Generic.HashSet[string]]$ExistierendeUPDNamen = New-Object System.Collections.Generic.HashSet[string]
+        $AdLernende | ForEach-Object {
+            $ExistierendeUPDNamen.Add($_.UserPrincipalName) | Out-Null
+        }
+
         # Neue Lernende hinzufügen
         foreach ($Lernender in $Lernende | Where-Object { $_.SamAccountName -in $NeueLernende.SamAccountName } ) {
-            Add-Lernender $Lernender
+            Add-Lernender $Lernender $ExistierendeUPDNamen
         }
         Write-Log "$($NeueLernende.Count) Lernende wurden zum AD hinzugefügt" -Level INFO
     }

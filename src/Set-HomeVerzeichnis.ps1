@@ -2,7 +2,7 @@
 # Datum: 22.05.2022
 # Version: 1.6
 # Funktionsbeschreibung: Benennt ein Home Verzeichnis eines Lernenden um
-# Parameter: (Optional) Der Benutzername des Lernenden
+# Parameter: (Optional) Der SamAccountName des Lernenden
 #            (Optional) Das neue Home Verzeichnis des Lernenden
 # Bemerkungen: Benutzereingaben werden erwartet
 #-----
@@ -29,12 +29,12 @@ Function Set-HomeVerzeichnis {
     process {
         # Benutzername abfragen (Leer nicht erlaubt)
         while (-not $AdUsername ) {
-            $AdUsername = Read-Host "Von welchem Lernenden sollte das Home Verzeichnis umbenannt werden? (Vorname.Nachname)"
+            $AdUsername = Read-Host "Von welchem Lernenden sollte das Home Verzeichnis umbenannt werden? (SamAccountName)"
         }
         Write-Log "Benutzer $AdUsername wird umbenannt" -Level DEBUG
 
         # Lernende aus AD auslesen
-        $AdLernender = $AdLernende | Where-Object { $_.UserPrincipalName -eq "$AdUsername@$($Config.SCHULE_OU)" } | Select-Object -First 1
+        $AdLernender = $AdLernende | Where-Object { $_.SamAccountName -eq $AdUsername } | Select-Object -First 1
 
         if (-not $AdLernender) {
             # Unbekannter Lernender
