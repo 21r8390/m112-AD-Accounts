@@ -19,19 +19,6 @@ _Projekt M122_
 
 </div>
 
-<!-- TABLE OF CONTENTS -->
-<details open>
-  <summary style="font-size:1.5rem">Table of Contents 📚</summary>
-  
-  - [Auftrag](#auftrag)
-  - [Anforderungen](#anforderungen)
-  - [Use cases](#use-cases)
-    - [Backend](#backend)
-    - [Frontend](#frontend)
-  - [Built with](#built-with)
-
-</details>
-
 <!-- ABOUT THE PROJECT -->
 
 ## ❗ PowerShell Version 7 verwenden
@@ -43,10 +30,10 @@ _Projekt M122_
 
 Sie erstellen auf der Basis einer vorliegenden XML-Datei ein PowerShell-Skript mit folgender Funktionalität:
 
-- [ ] Erstellen/Deaktivieren der AD-Accounts für alle Lernenden des BZT Frauenfeld
-- [ ] Erstellen/Löschen der AD-Gruppen pro Klasse
-- [ ] Erstellen/Umbenennen der Verzeichnisse für die Klassenablagen
-- [ ] Erstellen/Umbenennen der Home-Verzeichnisse der Lernenden
+- [x] Erstellen/Deaktivieren der AD-Accounts für alle Lernenden des BZT Frauenfeld
+- [x] Erstellen/Löschen der AD-Gruppen pro Klasse
+- [x] Erstellen/Umbenennen der Verzeichnisse für die Klassenablagen
+- [x] Erstellen/Umbenennen der Home-Verzeichnisse der Lernenden
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
